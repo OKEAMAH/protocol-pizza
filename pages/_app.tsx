@@ -38,7 +38,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <RainbowKitProvider chains={chains}>
         <Component {...pageProps} />
         <Head>
-          <title>Porsche 911</title>
+          <title>Protocol Pizza</title>
         </Head>
         <Script
           src="https://bluejeans.rwtp.org/script.js"
