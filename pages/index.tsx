@@ -9,7 +9,7 @@ SyntaxHighlighter.registerLanguage("typescript", typescript);
 export default function Landing() {
   return (
     <div className="bg-orange-50 h-full">
-      <div className="flex flex-row py-5 px-10 gap-2 items-center">
+      <div className="flex flex-row p-5 gap-2 items-center">
         <div className="text-3xl">🍕</div>
         <div className="flex flex-col">
           <p className="text-2xl font-black leading-none">Protocol Pizza</p>
