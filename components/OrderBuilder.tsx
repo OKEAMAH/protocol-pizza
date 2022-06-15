@@ -1,5 +1,5 @@
 import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Customer, Address } from "../lib/customer";
 import { Item, Order } from "../lib/item";
 import { ValidateRequestBody } from "../pages/api/validate";
@@ -29,11 +29,12 @@ export default function OrderBuilder({
       storeID: storeID,
       customer: customer,
       address: address,
-      items: items.map<Item>((item) => { // Strip items of validation stuff
+      items: items.map<Item>((item) => {
+        // Strip items of validation stuff
         return {
           code: item.code,
-          options: item.options
-        }
+          options: item.options,
+        };
       }),
     };
     const result = await fetch(`/api/validate`, {
@@ -91,16 +92,12 @@ export default function OrderBuilder({
           </button>
         )}
         {order.orderID && !errorMessage && (
-          <div
-            className="w-full bg-green-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
-          >
+          <div className="w-full bg-green-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1">
             <CheckCircleIcon className="h-4 w-4 text-white" />
             Valid Order
           </div>
         )}
-        {errorMessage && (
-          <div>{errorMessage}</div>
-        )}
+        {errorMessage && <div>{errorMessage}</div>}
       </div>
     </>
   );

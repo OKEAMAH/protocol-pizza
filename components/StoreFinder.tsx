@@ -1,5 +1,5 @@
 import { SearchIcon, ArrowDownIcon } from "@heroicons/react/solid";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Address } from "../lib/customer";
 
 export default function StoreFinder({
@@ -9,7 +9,7 @@ export default function StoreFinder({
 }: {
   address: Address;
   storeID: string;
-  setStoreID: (id: string) => void;
+  setStoreID: Dispatch<SetStateAction<string>>;
 }) {
   const [stores, setStores] = useState(Array<any>());
   const [errorMessage, setErrorMessage] = useState("");
@@ -23,7 +23,7 @@ export default function StoreFinder({
       const result = await fetch(`/api/nearbyStores`, {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(address),
       });
@@ -70,7 +70,7 @@ export default function StoreFinder({
             </div>
             {stores.map((store) => {
               // if (!store.ServiceMethodEstimatedWaitMinutes.Delivery) {
-                // console.log(store);
+              // console.log(store);
               // }
               return (
                 <div

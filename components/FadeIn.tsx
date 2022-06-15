@@ -1,4 +1,4 @@
-import { useSpring, animated } from 'react-spring';
+import { useSpring, animated } from "react-spring";
 
 export function FadeIn(props: any) {
   const style = useSpring({

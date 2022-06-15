@@ -23,7 +23,12 @@ export default function OrderForm() {
     if (!addressIsValid || !customerIsValid) {
       setStoreID("");
     }
-  }, [addressIsValid, customerIsValid])
+  }, [addressIsValid, customerIsValid]);
+
+  useEffect(() => {
+    setItems(new Array<Item>());
+    setOrder({} as Order);
+  }, [storeID]);
 
   return (
     <AppHeader>
@@ -56,19 +61,34 @@ export default function OrderForm() {
         {storeID && (
           <>
             <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-            <ItemBuilder storeID={storeID} customer={customer} address={address} items={items} setItems={setItems} setOrder={setOrder}/>
+            <ItemBuilder
+              storeID={storeID}
+              customer={customer}
+              address={address}
+              items={items}
+              setItems={setItems}
+              setOrder={setOrder}
+            />
           </>
         )}
         {items.length > 0 && (
           <>
             <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-            <OrderBuilder storeID={storeID} customer={customer} address={address} items={items} setItems={setItems} order={order} setOrder={setOrder}/>
+            <OrderBuilder
+              storeID={storeID}
+              customer={customer}
+              address={address}
+              items={items}
+              setItems={setItems}
+              order={order}
+              setOrder={setOrder}
+            />
           </>
         )}
         {order.orderID && (
           <>
-             <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-             <PostOrder order={order} />
+            <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
+            <PostOrder order={order} />
           </>
         )}
       </div>

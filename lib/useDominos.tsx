@@ -36,7 +36,7 @@ export async function validate(
   } catch (error) {
     console.log(error);
     return {
-      error: error
-    }
+      error: error,
+    };
   }
 }

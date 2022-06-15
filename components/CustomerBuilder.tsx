@@ -5,7 +5,7 @@ import { validateCustomer } from "../lib/validate";
 export default function CustomerBuilder({
   customer,
   setCustomer,
-  setCustomerIsValid
+  setCustomerIsValid,
 }: {
   customer: Customer;
   setCustomer: Dispatch<SetStateAction<Customer>>;
@@ -23,7 +23,7 @@ export default function CustomerBuilder({
     } else {
       setCustomerIsValid(false);
     }
-  }, [customer.firstName, customer.lastName, customer.phone, customer.email]);
+  }, [customer, setCustomerIsValid]);
 
   return (
     <>

@@ -4,10 +4,10 @@ import { Item } from "../../lib/item";
 import { validate } from "../../lib/useDominos";
 
 export interface ValidateRequestBody {
-  storeID: string,
-  customer: Customer,
-  address: Address,
-  items: Item[]
+  storeID: string;
+  customer: Customer;
+  address: Address;
+  items: Item[];
 }
 
 export default async function handler(
@@ -18,6 +18,11 @@ export default async function handler(
   if (!body) {
     return res.status(400).send({ error: "Invalid Body" });
   }
-  const resp = await validate(body.storeID, body.customer, body.address, body.items);
+  const resp = await validate(
+    body.storeID,
+    body.customer,
+    body.address,
+    body.items
+  );
   res.status(200).json(resp);
 }

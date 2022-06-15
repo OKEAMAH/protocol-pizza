@@ -1,9 +1,6 @@
-import { FingerPrintIcon, PhoneIcon, UserIcon } from "@heroicons/react/solid";
-import { useState } from "react";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import solidity from "react-syntax-highlighter/dist/cjs/languages/prism/solidity";
 import typescript from "react-syntax-highlighter/dist/cjs/languages/prism/typescript";
-import { BigNumber } from "ethers";
 import Link from "next/link";
 
 SyntaxHighlighter.registerLanguage("solidity", solidity);
@@ -13,7 +10,7 @@ export default function Landing() {
   return (
     <div className="bg-orange-50 h-full">
       <div className="flex flex-row justify-end py-5 px-10">
-        <Link href="/order">
+        <Link href="/order" passHref>
           <button className="bg-orange-600 rounded px-3 py-1 text-lg text-white">
             Launch App
           </button>

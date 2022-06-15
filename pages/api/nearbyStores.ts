@@ -1,6 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { Address } from '../../lib/customer';
-import { getNearbyStores } from '../../lib/useDominos';
+import type { NextApiRequest, NextApiResponse } from "next";
+import { Address } from "../../lib/customer";
+import { getNearbyStores } from "../../lib/useDominos";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,5 +12,5 @@ export default async function handler(
   }
 
   const stores = await getNearbyStores(address);
-  res.status(200).json({stores:stores});
+  res.status(200).json({ stores: stores });
 }

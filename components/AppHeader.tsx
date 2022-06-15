@@ -4,14 +4,10 @@ import {
   SwitchHorizontalIcon,
 } from "@heroicons/react/solid";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Image from "next/image";
 import Link from "next/link";
 import { FadeIn } from "./FadeIn";
-import cn from "classnames";
 import { useRouter } from "next/router";
 import { useNetwork, useWaitForTransaction } from "wagmi";
-import { useState } from "react";
-//  import { useChainId } from '../lib/useChainId';
 
 export function AppHeader(props: {
   children: React.ReactNode;
@@ -27,14 +23,14 @@ export function AppHeader(props: {
     <div className="h-full">
       <div className="flex flex-row justify between items-center p-5 gap-5">
         <div className="w-1/3">
-          <Link href="/">
+          <Link href="/" passHref>
             <div className="text-3xl">🍕</div>
           </Link>
         </div>
 
         <div className="w-1/3 min-w-fit">
           <div className="flex flex-row mx-auto w-min text-lg bg-white rounded-xl p-1 ">
-            <Link href="/order">
+            <Link href="/order" passHref>
               <div
                 className={"rounded-xl px-3 py-1 ".concat(
                   router.pathname == "/order"
@@ -45,7 +41,7 @@ export function AppHeader(props: {
                 Order
               </div>
             </Link>
-            <Link href="/market">
+            <Link href="/market" passHref>
               <div
                 className={"rounded-xl px-3 py-1 ".concat(
                   router.pathname == "/market"

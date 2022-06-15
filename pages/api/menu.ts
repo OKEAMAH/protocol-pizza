@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { getStoreMenu } from '../../lib/useDominos';
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getStoreMenu } from "../../lib/useDominos";
 
 export default async function handler(
   req: NextApiRequest,

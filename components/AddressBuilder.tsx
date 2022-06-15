@@ -5,7 +5,7 @@ import { validateAddress } from "../lib/validate";
 export default function AddressBuilder({
   address,
   setAddress,
-  setAddressIsValid
+  setAddressIsValid,
 }: {
   address: Address;
   setAddress: Dispatch<SetStateAction<Address>>;
@@ -23,8 +23,8 @@ export default function AddressBuilder({
     } else {
       setAddressIsValid(false);
     }
-  }, [address.street, address.city, address.region, address.postalCode]);
-  
+  }, [address, setAddressIsValid]);
+
   return (
     <>
       <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">

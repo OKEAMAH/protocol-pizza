@@ -3,7 +3,6 @@ import { Customer, Address } from "../lib/customer";
 import { Menu } from "../lib/menu";
 import { ValidateRequestBody } from "../pages/api/validate";
 import { Item, Order } from "../lib/item";
-import { responseSymbol } from "next/dist/server/web/spec-compliant/fetch-event";
 import { PlusCircleIcon } from "@heroicons/react/solid";
 
 export default function ItemBuilder({
@@ -26,7 +25,7 @@ export default function ItemBuilder({
   const [cheese, setCheese] = useState<boolean>(false);
   const [sauce, setSauce] = useState<string>("");
   const [topping, setTopping] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>();
+  const [_, setErrorMessage] = useState<string>();
 
   // TODO: Add loading during this fetch
   useEffect(() => {
@@ -80,7 +79,7 @@ export default function ItemBuilder({
     const json = await result.json();
     if (json["status"] && json["status"] != -1) {
       // Add item to items
-      console.log(setOrder)
+      console.log(setOrder);
       setOrder({} as Order);
       setItems([...items, json.products[0] as Item]);
     } else {
@@ -90,7 +89,7 @@ export default function ItemBuilder({
 
   // TODO: Items are coming out with default cheese/sauce
   function makeDominosItem(): Item {
-    var options: any = {};
+    let options: any = {};
     if (sauce) options[sauce] = { "1/1": "1" };
     if (topping) options[topping] = { "1/1": "1" };
     if (cheese) options["C"] = { "1/1": "1" };
