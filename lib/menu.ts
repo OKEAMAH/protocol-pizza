@@ -728,8 +728,8 @@ export interface ATags {
 }
 
 export interface ToppingsPasta {
-  Xf: Xf;
-  Xm: Xf;
+  Xf: any;
+  Xm: any;
   P: K;
   S: K;
   B: K;
@@ -822,11 +822,11 @@ export interface TentacledTags {
 }
 
 export interface Sandwich {
-  X: Xf;
-  Mh: Xf;
-  Bd: Xf;
-  Rd: Xf;
-  Ht: Xf;
+  X: any;
+  Mh: any;
+  Bd: any;
+  Rd: any;
+  Ht: any;
   C: AC;
   P: K;
   Pm: K;

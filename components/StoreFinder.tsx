@@ -43,7 +43,8 @@ export default function StoreFinder({
   return (
     <>
       {address && (
-        <div className="flex items-center mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow">
+        <div className="flex items-center gap-1 mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow">
+          <SearchIcon className="h-4 w-4" />
           <button
             onClick={() => {
               getStores();
@@ -51,7 +52,6 @@ export default function StoreFinder({
           >
             Find Store
           </button>
-          <SearchIcon className="h-4 w-4 ml-1" />
         </div>
       )}
       {errorMessage && (
@@ -69,9 +69,9 @@ export default function StoreFinder({
               <p className="text-right underline opacity-50">estimated wait</p>
             </div>
             {stores.map((store) => {
-              if (!store.ServiceMethodEstimatedWaitMinutes.Delivery) {
-                console.log(store);
-              }
+              // if (!store.ServiceMethodEstimatedWaitMinutes.Delivery) {
+                // console.log(store);
+              // }
               return (
                 <div
                   key={store.StoreID}
