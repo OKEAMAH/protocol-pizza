@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Customer, Address } from "../lib/customer";
 import { Menu } from "../lib/menu";
 import { ValidateRequestBody } from "../pages/api/validate";
-import { Item } from "../lib/item";
+import { Item, Order } from "../lib/item";
 import { responseSymbol } from "next/dist/server/web/spec-compliant/fetch-event";
 import { PlusCircleIcon } from "@heroicons/react/solid";
 
@@ -12,14 +12,14 @@ export default function ItemBuilder({
   address,
   items,
   setItems,
-  setOrderIsValid,
+  setOrder,
 }: {
   storeID: string;
   customer: Customer;
   address: Address;
   items: Item[];
   setItems: Dispatch<SetStateAction<Item[]>>;
-  setOrderIsValid: Dispatch<SetStateAction<boolean>>;
+  setOrder: Dispatch<SetStateAction<Order>>;
 }) {
   const [menu, setMenu] = useState<Menu>();
   const [size, setSize] = useState<string>();
@@ -80,13 +80,15 @@ export default function ItemBuilder({
     const json = await result.json();
     if (json["status"] && json["status"] != -1) {
       // Add item to items
-      setOrderIsValid(false);
+      console.log(setOrder)
+      setOrder({} as Order);
       setItems([...items, json.products[0] as Item]);
     } else {
       setErrorMessage("Error validating item");
     }
   }
 
+  // TODO: Items are coming out with default cheese/sauce
   function makeDominosItem(): Item {
     var options: any = {};
     if (sauce) options[sauce] = { "1/1": "1" };
@@ -109,7 +111,7 @@ export default function ItemBuilder({
       <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
         <p>Create Pizza</p>
         <div>
-          <p className="text-sm">Size</p>
+          <p className="text-sm mb-1">Size</p>
           <select
             className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
             onChange={(event) => {
@@ -127,7 +129,7 @@ export default function ItemBuilder({
           </select>
         </div>
         <div>
-          <p className="text-sm">Sauce</p>
+          <p className="text-sm mb-1">Sauce</p>
           <select
             className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
             value={sauce}
@@ -158,7 +160,7 @@ export default function ItemBuilder({
           />
         </div>
         <div>
-          <p className="text-sm">Topping</p>
+          <p className="text-sm mb-1">Topping</p>
           <select
             className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
             value={topping}

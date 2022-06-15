@@ -27,12 +27,16 @@ export async function validate(
   let order = new dominos.Order(newCustomer);
   order.storeID = storeID;
   order.serviceMethod = "Delivery";
-  const item = new dominos.Item(items[0]);
-  order.addItem(item);
+  for (const item of items) {
+    order.addItem(new dominos.Item(item));
+  }
   try {
-    const res = await order.validate();
+    const res = await order.price();
     return res;
   } catch (error) {
     console.log(error);
+    return {
+      error: error
+    }
   }
 }

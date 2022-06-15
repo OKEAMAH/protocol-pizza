@@ -7,16 +7,17 @@ import CustomerBuilder from "../components/CustomerBuilder";
 import ItemBuilder from "../components/ItemBuilder";
 import StoreFinder from "../components/StoreFinder";
 import { Address, Customer } from "../lib/customer";
-import { Item } from "../lib/item";
+import { Item, Order } from "../lib/item";
+import PostOrder from "../components/PostOrder";
 
-export default function Order() {
+export default function OrderForm() {
   const [customer, setCustomer] = useState<Customer>({} as Customer);
   const [customerIsValid, setCustomerIsValid] = useState<boolean>(false);
   const [address, setAddress] = useState<Address>({} as Address);
   const [addressIsValid, setAddressIsValid] = useState<boolean>(false);
   const [storeID, setStoreID] = useState<string>("");
   const [items, setItems] = useState<Item[]>(new Array<Item>());
-  const [orderIsValid, setOrderIsValid] = useState<boolean>(false);
+  const [order, setOrder] = useState<Order>({} as Order);
 
   useEffect(() => {
     if (!addressIsValid || !customerIsValid) {
@@ -26,7 +27,7 @@ export default function Order() {
 
   return (
     <AppHeader>
-      <div className="flex flex-col gap-5 py-10 max-w-md mx-auto px-2">
+      <div className="flex flex-col gap-5 pt-10 pb-32 max-w-md mx-auto px-2">
         <CustomerBuilder
           customer={customer}
           setCustomer={setCustomer}
@@ -55,13 +56,19 @@ export default function Order() {
         {storeID && (
           <>
             <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-            <ItemBuilder storeID={storeID} customer={customer} address={address} items={items} setItems={setItems} setOrderIsValid={setOrderIsValid}/>
+            <ItemBuilder storeID={storeID} customer={customer} address={address} items={items} setItems={setItems} setOrder={setOrder}/>
           </>
         )}
         {items.length > 0 && (
           <>
             <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-            <OrderBuilder storeID={storeID} customer={customer} address={address} items={items} setItems={setItems} orderIsValid={orderIsValid} setOrderIsValid={setOrderIsValid}/>
+            <OrderBuilder storeID={storeID} customer={customer} address={address} items={items} setItems={setItems} order={order} setOrder={setOrder}/>
+          </>
+        )}
+        {order.orderID && (
+          <>
+             <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
+             <PostOrder order={order} />
           </>
         )}
       </div>
