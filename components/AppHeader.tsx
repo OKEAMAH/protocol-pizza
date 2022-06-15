@@ -21,15 +21,15 @@ export function AppHeader(props: {
   });
   return (
     <div className="h-full">
-      <div className="flex flex-row justify between items-center p-5 gap-5">
+      <div className="flex flex-row justify between items-center p-5 gap-2">
         <div className="w-1/3">
           <Link href="/" passHref>
-            <div className="text-3xl">🍕</div>
+            <div className="text-2xl sm:text-3xl">🍕</div>
           </Link>
         </div>
 
         <div className="w-1/3 min-w-fit">
-          <div className="flex flex-row mx-auto w-min text-lg bg-white rounded-xl p-1 ">
+          <div className="flex flex-row mx-auto w-min text-base sm:text-lg bg-white rounded-xl p-1 ">
             <Link href="/order" passHref>
               <div
                 className={"rounded-xl px-3 py-1 ".concat(
@@ -70,11 +70,10 @@ export function AppHeader(props: {
                   if (!mounted || !account || !chain || !switchNetwork) {
                     return (
                       <button
-                        className="bg-white  rounded-xl px-3 py-2 flex items-center"
+                        className="bg-white text-base sm:text-lg rounded-xl px-3 py-2 flex items-center gap-1"
                         onClick={openConnectModal}
                       >
-                        Connect Wallet{" "}
-                        <FingerPrintIcon className="h-4 w-4 ml-2" />
+                        Connect Wallet <FingerPrintIcon className="h-4 w-4" />
                       </button>
                     );
                   }
