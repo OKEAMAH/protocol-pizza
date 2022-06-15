@@ -1,4 +1,8 @@
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/solid";
+import {
+  CheckCircleIcon,
+  RefreshIcon,
+  XCircleIcon,
+} from "@heroicons/react/solid";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Customer, Address } from "../lib/customer";
 import { Item, Order } from "../lib/item";
@@ -22,8 +26,10 @@ export default function OrderBuilder({
   setOrder: Dispatch<SetStateAction<Order>>;
 }): JSX.Element {
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function validateOrder() {
+    setIsLoading(true);
     // Validate item with domino's API
     const body: ValidateRequestBody = {
       storeID: storeID,
@@ -53,6 +59,7 @@ export default function OrderBuilder({
       setOrder({} as Order);
       setErrorMessage("Error validating order");
     }
+    setIsLoading(false);
   }
 
   return (
@@ -83,7 +90,7 @@ export default function OrderBuilder({
             </div>
           );
         })}
-        {!order.orderID && (
+        {!isLoading && !order.orderID && (
           <button
             className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
             onClick={() => validateOrder()}
@@ -91,10 +98,16 @@ export default function OrderBuilder({
             Validate Order
           </button>
         )}
-        {order.orderID && !errorMessage && (
+        {!isLoading && order.orderID && !errorMessage && (
           <div className="w-full bg-green-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1">
             <CheckCircleIcon className="h-4 w-4 text-white" />
             Valid Order
+          </div>
+        )}
+        {isLoading && (
+          <div className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1">
+            Loading
+            <RefreshIcon className="h-4 w-4 animate-reverse-spin" />
           </div>
         )}
         {errorMessage && <div>{errorMessage}</div>}

@@ -3,7 +3,7 @@ import { Customer, Address } from "../lib/customer";
 import { Menu } from "../lib/menu";
 import { ValidateRequestBody } from "../pages/api/validate";
 import { Item, Order } from "../lib/item";
-import { PlusCircleIcon } from "@heroicons/react/solid";
+import { PlusCircleIcon, RefreshIcon } from "@heroicons/react/solid";
 
 export default function ItemBuilder({
   storeID,
@@ -26,6 +26,7 @@ export default function ItemBuilder({
   const [sauce, setSauce] = useState<string>("");
   const [topping, setTopping] = useState<string>("");
   const [_, setErrorMessage] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // TODO: Add loading during this fetch
   useEffect(() => {
@@ -55,11 +56,17 @@ export default function ItemBuilder({
     fetchStoreMenu();
   }, [storeID]);
 
-  if (!menu || !storeID) {
-    return <></>;
+  if (!menu) {
+    return (
+      <div className="flex justify-center items-center mx-auto gap-1 text-gray-600">
+        <p>Loading Menu</p>
+        <RefreshIcon className="h-4 w-4 animate-reverse-spin" />
+      </div>
+    );
   }
 
   async function addItem() {
+    setIsLoading(true);
     const item = makeDominosItem();
 
     // Validate item with domino's API
@@ -85,6 +92,7 @@ export default function ItemBuilder({
     } else {
       setErrorMessage("Error validating item");
     }
+    setIsLoading(false);
   }
 
   // TODO: Items are coming out with default cheese/sauce
@@ -209,13 +217,24 @@ export default function ItemBuilder({
             </optgroup>
           </select>
         </div>
-        <button
-          className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
-          onClick={() => addItem()}
-        >
-          <PlusCircleIcon className="h-4 w-4 text-white" />
-          Add to Order
-        </button>
+        {!isLoading && (
+          <button
+            className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
+            onClick={() => addItem()}
+          >
+            <PlusCircleIcon className="h-4 w-4 text-white" />
+            Add to Order
+          </button>
+        )}
+        {isLoading && (
+          <div
+            className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
+            onClick={() => addItem()}
+          >
+            Loading
+            <RefreshIcon className="h-4 w-4 animate-reverse-spin" />
+          </div>
+        )}
       </div>
     </>
   );

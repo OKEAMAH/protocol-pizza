@@ -1,4 +1,4 @@
-import { SearchIcon, ArrowDownIcon } from "@heroicons/react/solid";
+import { SearchIcon, ArrowDownIcon, RefreshIcon } from "@heroicons/react/solid";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Address } from "../lib/customer";
 
@@ -12,10 +12,12 @@ export default function StoreFinder({
   setStoreID: Dispatch<SetStateAction<string>>;
 }) {
   const [stores, setStores] = useState(Array<any>());
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   async function getStores() {
     if (!address) return;
+    setIsLoading(true);
     setStoreID("");
     setStores([]);
     setErrorMessage("");
@@ -29,7 +31,7 @@ export default function StoreFinder({
       });
       const data = await result.json();
       if (data.stores.length > 0) {
-        setStores(data.stores);
+        setStores(data.stores.slice(0, 5));
         console.log(data);
       } else {
         setErrorMessage("No stores found");
@@ -38,21 +40,32 @@ export default function StoreFinder({
       console.log(error);
       setErrorMessage("Error, view console for details");
     }
+    setIsLoading(false);
   }
 
   return (
     <>
       {address && (
-        <div className="flex items-center gap-1 mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow">
-          <SearchIcon className="h-4 w-4" />
-          <button
-            onClick={() => {
-              getStores();
-            }}
-          >
-            Find Store
-          </button>
-        </div>
+        <>
+          {!isLoading && (
+            <div className="flex items-center gap-1 mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow">
+              <SearchIcon className="h-4 w-4" />
+              <button
+                onClick={() => {
+                  getStores();
+                }}
+              >
+                Find Store
+              </button>
+            </div>
+          )}
+          {isLoading && (
+            <div className="flex items-center gap-1 mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow">
+              <div>Loading</div>
+              <RefreshIcon className="h-4 w-4 animate-reverse-spin" />
+            </div>
+          )}
+        </>
       )}
       {errorMessage && (
         <>

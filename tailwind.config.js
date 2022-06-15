@@ -16,6 +16,16 @@ module.exports = {
         '1/3':'33%',
         '60':'60%',
         '40':'40%'
+      },
+      animation: {
+        'reverse-spin': 'reverse-spin 1s linear infinite'
+      },
+      keyframes: {
+        'reverse-spin': {
+          from: {
+            transform: 'rotate(360deg)'
+          },
+        }
       }
     },
   },
