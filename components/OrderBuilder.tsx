@@ -67,6 +67,7 @@ export default function OrderBuilder({
       <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
         <p>Order</p>
         {items.map((item) => {
+          console.log(item);
           if (!item.iD || !item.descriptions || !item.name) {
             return;
           }
@@ -85,7 +86,9 @@ export default function OrderBuilder({
               />
               <div className="w-full flex flex-col bg-gray-100 rounded-xl p-3">
                 <p>{item.name}</p>
-                <p>{item.descriptions[0].value}</p>
+                <p>
+                  {item.descriptions[0].value.replace("Robust Inspired", "")}
+                </p>
               </div>
             </div>
           );

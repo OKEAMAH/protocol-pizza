@@ -22,7 +22,8 @@ export default function ItemBuilder({
 }) {
   const [menu, setMenu] = useState<Menu>();
   const [size, setSize] = useState<string>();
-  const [cheese, setCheese] = useState<boolean>(false);
+  const [cheese, setCheese] = useState<boolean>(true);
+  const [tomatoSauce, setTomatoSauce] = useState<boolean>(true);
   const [sauce, setSauce] = useState<string>("");
   const [topping, setTopping] = useState<string>("");
   const [_, setErrorMessage] = useState<string>();
@@ -68,7 +69,6 @@ export default function ItemBuilder({
   async function addItem() {
     setIsLoading(true);
     const item = makeDominosItem();
-
     // Validate item with domino's API
     const body: ValidateRequestBody = {
       storeID: storeID,
@@ -86,8 +86,8 @@ export default function ItemBuilder({
     const json = await result.json();
     if (json["status"] && json["status"] != -1) {
       // Add item to items
-      console.log(setOrder);
       setOrder({} as Order);
+      console.log(json.products[0]);
       setItems([...items, json.products[0] as Item]);
     } else {
       setErrorMessage("Error validating item");
@@ -95,12 +95,15 @@ export default function ItemBuilder({
     setIsLoading(false);
   }
 
-  // TODO: Items are coming out with default cheese/sauce
   function makeDominosItem(): Item {
-    let options: any = {};
+    let options: any = {
+      C: 0,
+      X: 0,
+    };
     if (sauce) options[sauce] = { "1/1": "1" };
     if (topping) options[topping] = { "1/1": "1" };
     if (cheese) options["C"] = { "1/1": "1" };
+    if (tomatoSauce) options["X"] = { "1/1": "1" };
     return {
       code: `${size}SCREEN`,
       qty: 1,
@@ -108,15 +111,33 @@ export default function ItemBuilder({
     };
   }
 
-  const sauces = Object.keys(menu.toppings.pizza).filter((key) => {
-    const topping = menu.toppings.pizza[key];
-    if (topping.tags.sauce) return true;
-  });
-
   return (
     <>
       <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
         <p>Create Pizza</p>
+        <div>
+          <p className="text-sm">Default Toppings</p>
+          <div className="flex items-center gap-1">
+            <p className="text-sm">Cheese:</p>
+            <input
+              type="checkbox"
+              checked={cheese}
+              onChange={(event) => {
+                setCheese(event.target.checked);
+              }}
+            />
+          </div>
+          <div className="flex items-center gap-1">
+            <p className="text-sm">Tomato Sauce:</p>
+            <input
+              type="checkbox"
+              checked={tomatoSauce}
+              onChange={(event) => {
+                setTomatoSauce(event.target.checked);
+              }}
+            />
+          </div>
+        </div>
         <div>
           <p className="text-sm mb-1">Size</p>
           <select
@@ -136,38 +157,7 @@ export default function ItemBuilder({
           </select>
         </div>
         <div>
-          <p className="text-sm mb-1">Sauce</p>
-          <select
-            className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
-            value={sauce}
-            onChange={(event) => {
-              setSauce(event.target.value);
-            }}
-          >
-            <option value={""}>None</option>
-            {sauces.map((key) => {
-              const topping = menu.toppings.pizza[key];
-              return (
-                <option key={topping.code} value={topping.code}>
-                  {topping.name}
-                </option>
-              );
-            })}
-          </select>
-        </div>
-        {/* TODO: STYLE */}
-        <div className="flex items-center gap-1">
-          <p className="text-sm">Cheese:</p>
-          <input
-            type="checkbox"
-            checked={cheese}
-            onChange={(event) => {
-              setCheese(event.target.checked);
-            }}
-          />
-        </div>
-        <div>
-          <p className="text-sm mb-1">Topping</p>
+          <p className="text-sm mb-1">Toppings</p>
           <select
             className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
             value={topping}
@@ -176,6 +166,17 @@ export default function ItemBuilder({
             }}
           >
             <option value={""}>None</option>
+            <optgroup label="Sauces">
+              {Object.keys(menu.toppings.pizza).map((key) => {
+                const topping = menu.toppings.pizza[key];
+                if (!topping.tags.sauce || topping.code == "X") return;
+                return (
+                  <option value={topping.code} key={topping.code}>
+                    {topping.name}
+                  </option>
+                );
+              })}
+            </optgroup>
             <optgroup label="Veggies">
               {Object.keys(menu.toppings.pizza).map((key) => {
                 const topping = menu.toppings.pizza[key];

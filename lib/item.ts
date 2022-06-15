@@ -84,10 +84,11 @@ export interface AmountsBreakdown {
 
 export interface Item {
   iD?: number;
-  code: string;
+  code?: string;
   qty?: number;
   options?: Options;
   isNew?: boolean;
+  sizeCode?: string;
   categoryCode?: string;
   flavorCode?: string;
   status?: number;

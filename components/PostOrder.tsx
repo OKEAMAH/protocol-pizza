@@ -21,11 +21,6 @@ export default function PostOrder({ order }: { order: Order }) {
               );
             })}
             <div className="flex gap-1 items-center w-full">
-              <p>Food</p>
-              <div className="flex-grow min-h-0"></div>
-              <p>${order.amountsBreakdown.foodAndBeverage}</p>
-            </div>
-            <div className="flex gap-1 items-center w-full">
               <p>Delivery Free</p>
               <div className="flex-grow min-h-0"></div>
               <p>${order.amountsBreakdown.deliveryFee}</p>
