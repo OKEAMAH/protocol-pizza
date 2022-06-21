@@ -64,7 +64,16 @@ export async function place(
   items: Item[]
 ) {
   const order = buildOrder(storeID, customer, address, items);
-  // TODO: Add payment
+  const card = new dominos.Payment({
+    amount: order.amountsBreakdown.customer,
+    number: process.env.CARD_NUMBER,
+    expiration: process.env.CARD_EXPIRATION_DATE,
+    securityCode: process.env.CARD_SECURITY_CODE,
+    postalCode: process.env.CARD_POSTAL_CODE,
+    tipAmount: 0,
+  });
+  order.payments.push(card);
+
   try {
     const res = await order.place();
     return res;
