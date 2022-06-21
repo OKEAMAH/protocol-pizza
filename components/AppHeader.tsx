@@ -21,37 +21,21 @@ export function AppHeader(props: {
   });
   return (
     <div className="h-full">
-      <div className="flex flex-row justify between items-center p-5 gap-2">
-        <div className="w-1/3">
-          <Link href="/" passHref>
-            <div className="text-2xl sm:text-3xl">🍕</div>
-          </Link>
-        </div>
-
-        <div className="w-1/3 min-w-fit">
-          <div className="flex flex-row mx-auto w-min text-base sm:text-lg bg-white rounded-xl p-1 ">
-            <Link href="/order" passHref>
-              <div
-                className={"rounded-xl px-3 py-1 ".concat(
-                  router.pathname == "/order"
-                    ? "bg-gray-50 font-semibold"
-                    : "cursor-pointer opacity-50 hover:opacity-100"
-                )}
+      <div className="flex flex-row items-center justify-between p-5 gap-2">
+        <div className="flex gap-2">
+          <div className="text-3xl">🍕</div>
+          <div className="flex flex-col">
+            <p className="text-2xl font-black leading-none">Protocol Pizza</p>
+            <p className="text-sm leading-none">
+              Powered by{" "}
+              <a
+                href="https://rwtp.org"
+                target="_blank"
+                className="underline text-sky-500"
               >
-                Order
-              </div>
-            </Link>
-            <Link href="/market" passHref>
-              <div
-                className={"rounded-xl px-3 py-1 ".concat(
-                  router.pathname == "/market"
-                    ? "bg-gray-50 font-semibold"
-                    : "cursor-pointer opacity-50 hover:opacity-100"
-                )}
-              >
-                Market
-              </div>
-            </Link>
+                RWTP
+              </a>
+            </p>
           </div>
         </div>
 
