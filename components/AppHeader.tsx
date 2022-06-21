@@ -4,9 +4,7 @@ import {
   SwitchHorizontalIcon,
 } from "@heroicons/react/solid";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import Link from "next/link";
 import { FadeIn } from "./FadeIn";
-import { useRouter } from "next/router";
 import { useNetwork, useWaitForTransaction } from "wagmi";
 
 export function AppHeader(props: {
@@ -15,7 +13,6 @@ export function AppHeader(props: {
 }) {
   const { switchNetwork } = useNetwork();
   // const chainId = useChainId();
-  const router = useRouter();
   const waitForTransaction = useWaitForTransaction({
     hash: props.txHash,
   });

@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
 
 export default function Place() {
   const router = useRouter();
-  const orderAddress = router.query.id as string || "";
+  const orderAddress = (router.query.id as string) || "";
+
+  console.log(orderAddress);
 
   // TODO: Get item JSON from rwtp
 
@@ -18,9 +19,9 @@ export default function Place() {
         <input
           className="bg-gray-100 rounded-xl px-3 py-1 w-full"
           placeholder="Order Address"
-          onChange={(event) => {
-            // setOrderAddress(event.target.value);
-          }}
+          // onChange={(event) => {
+          // setOrderAddress(event.target.value);
+          // }}
         ></input>
         <button
           className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"

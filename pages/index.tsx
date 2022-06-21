@@ -35,7 +35,7 @@ export default function Landing() {
     setItems(new Array<Item>());
     setOrder({} as Order);
   }, [storeID]);
-  
+
   return (
     <AppHeader>
       <div className="bg-orange-50 h-full">

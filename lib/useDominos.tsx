@@ -23,12 +23,12 @@ export async function getStoreMenu(storeID: string): Promise<Menu> {
   return menu as Menu;
 }
 
-export async function validate(
+function buildOrder(
   storeID: string,
   customer: Customer,
   address: Address,
   items: Item[]
-) {
+): any {
   let newCustomer = new dominos.Customer(customer);
   newCustomer.address = new dominos.Address(address);
   let order = new dominos.Order(newCustomer);
@@ -37,6 +37,15 @@ export async function validate(
   for (const item of items) {
     order.addItem(new dominos.Item(item));
   }
+}
+
+export async function validate(
+  storeID: string,
+  customer: Customer,
+  address: Address,
+  items: Item[]
+) {
+  const order = buildOrder(storeID, customer, address, items);
   try {
     const res = await order.price();
     return res;
@@ -54,14 +63,7 @@ export async function place(
   address: Address,
   items: Item[]
 ) {
-  let newCustomer = new dominos.Customer(customer);
-  newCustomer.address = new dominos.Address(address);
-  let order = new dominos.Order(newCustomer);
-  order.storeID = storeID;
-  order.serviceMethod = "Delivery";
-  for (const item of items) {
-    order.addItem(new dominos.Item(item));
-  }
+  const order = buildOrder(storeID, customer, address, items);
   // TODO: Add payment
   try {
     const res = await order.place();

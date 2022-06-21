@@ -91,7 +91,7 @@ export default function StoreFinder({
                   className="cursor-pointer bg-white"
                   onClick={() => {
                     // if (store.ServiceIsOpen.Delivery) {
-                      setStoreID(store.StoreID);
+                    setStoreID(store.StoreID);
                     // }
                   }}
                 >
