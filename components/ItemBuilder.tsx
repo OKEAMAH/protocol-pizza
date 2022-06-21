@@ -24,7 +24,6 @@ export default function ItemBuilder({
   const [size, setSize] = useState<string>();
   const [cheese, setCheese] = useState<boolean>(true);
   const [tomatoSauce, setTomatoSauce] = useState<boolean>(true);
-  const [sauce, setSauce] = useState<string>("");
   const [topping, setTopping] = useState<string>("");
   const [_, setErrorMessage] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -35,7 +34,6 @@ export default function ItemBuilder({
       if (!storeID) return;
       setMenu(undefined);
       setSize(undefined);
-      setSauce("");
       setTopping("");
       try {
         const result = await fetch(`/api/menu?storeID=${storeID}`, {
@@ -100,7 +98,6 @@ export default function ItemBuilder({
       C: 0,
       X: 0,
     };
-    if (sauce) options[sauce] = { "1/1": "1" };
     if (topping) options[topping] = { "1/1": "1" };
     if (cheese) options["C"] = { "1/1": "1" };
     if (tomatoSauce) options["X"] = { "1/1": "1" };

@@ -90,9 +90,9 @@ export default function StoreFinder({
                   key={store.StoreID}
                   className="cursor-pointer bg-white"
                   onClick={() => {
-                    if (store.ServiceIsOpen.Delivery) {
+                    // if (store.ServiceIsOpen.Delivery) {
                       setStoreID(store.StoreID);
-                    }
+                    // }
                   }}
                 >
                   <div className="flex text-sm gap-2">
