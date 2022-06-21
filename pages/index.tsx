@@ -107,7 +107,7 @@ export default function Landing() {
               uses."
             </p>
             <p className="text">
-              - Someone who never bought a pizza with crypto
+              - Someone who hasn't bought a pizza with crypto
             </p>
           </div>
           <p className="text-3xl text-center">How it Works</p>

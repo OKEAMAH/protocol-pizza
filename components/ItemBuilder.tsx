@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Customer, Address } from "../lib/customer";
 import { Menu } from "../lib/menu";
-import { ValidateRequestBody } from "../pages/api/validate";
 import { Item, Order } from "../lib/item";
 import { PlusCircleIcon, RefreshIcon } from "@heroicons/react/solid";
+import { OrderRequestBody } from "../lib/useDominos";
 
 export default function ItemBuilder({
   storeID,
@@ -28,7 +28,6 @@ export default function ItemBuilder({
   const [_, setErrorMessage] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // TODO: Add loading during this fetch
   useEffect(() => {
     const fetchStoreMenu = async () => {
       if (!storeID) return;
@@ -68,7 +67,7 @@ export default function ItemBuilder({
     setIsLoading(true);
     const item = makeDominosItem();
     // Validate item with domino's API
-    const body: ValidateRequestBody = {
+    const body: OrderRequestBody = {
       storeID: storeID,
       customer: customer,
       address: address,

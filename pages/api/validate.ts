@@ -1,20 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Address, Customer } from "../../lib/customer";
-import { Item } from "../../lib/item";
-import { validate } from "../../lib/useDominos";
-
-export interface ValidateRequestBody {
-  storeID: string;
-  customer: Customer;
-  address: Address;
-  items: Item[];
-}
+import { OrderRequestBody, validate } from "../../lib/useDominos";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const body = req.body as ValidateRequestBody;
+  const body = req.body as OrderRequestBody;
   if (!body) {
     return res.status(400).send({ error: "Invalid Body" });
   }

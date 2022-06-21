@@ -3,6 +3,13 @@ import { Address, Customer } from "./customer";
 import { Item } from "./item";
 import { Menu } from "./menu";
 
+export interface OrderRequestBody {
+  storeID: string;
+  customer: Customer;
+  address: Address;
+  items: Item[];
+}
+
 export async function getNearbyStores(address: Address) {
   const nearbyStores = await new dominos.NearbyStores(address);
   for (const store of nearbyStores.stores) {
@@ -32,6 +39,32 @@ export async function validate(
   }
   try {
     const res = await order.price();
+    return res;
+  } catch (error) {
+    console.log(error);
+    return {
+      error: error,
+    };
+  }
+}
+
+export async function place(
+  storeID: string,
+  customer: Customer,
+  address: Address,
+  items: Item[]
+) {
+  let newCustomer = new dominos.Customer(customer);
+  newCustomer.address = new dominos.Address(address);
+  let order = new dominos.Order(newCustomer);
+  order.storeID = storeID;
+  order.serviceMethod = "Delivery";
+  for (const item of items) {
+    order.addItem(new dominos.Item(item));
+  }
+  // TODO: Add payment
+  try {
+    const res = await order.place();
     return res;
   } catch (error) {
     console.log(error);

@@ -6,7 +6,7 @@ import {
 import { Dispatch, SetStateAction, useState } from "react";
 import { Customer, Address } from "../lib/customer";
 import { Item, Order } from "../lib/item";
-import { ValidateRequestBody } from "../pages/api/validate";
+import { OrderRequestBody } from "../lib/useDominos";
 
 export default function OrderBuilder({
   storeID,
@@ -31,7 +31,7 @@ export default function OrderBuilder({
   async function validateOrder() {
     setIsLoading(true);
     // Validate item with domino's API
-    const body: ValidateRequestBody = {
+    const body: OrderRequestBody = {
       storeID: storeID,
       customer: customer,
       address: address,
