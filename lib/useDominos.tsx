@@ -37,6 +37,7 @@ function buildOrder(
   for (const item of items) {
     order.addItem(new dominos.Item(item));
   }
+  return order;
 }
 
 export async function validate(
