@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$ref": "#/definitions/Order",
+  "definitions": {
+    "Order": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "storeID": {
+          "type": "string",
+          "format": "integer"
+        },
+        "customer": {
+          "$ref": "#/definitions/Customer"
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Item"
+          }
+        }
+      },
+      "required": ["address", "customer", "items", "storeID"],
+      "title": "Order"
+    },
+    "Address": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string",
+          "format": "integer"
+        }
+      },
+      "required": ["city", "postalCode", "region", "street"],
+      "title": "Address"
+    },
+    "Customer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        }
+      },
+      "required": ["email", "firstName", "lastName", "phone"],
+      "title": "Customer"
+    },
+    "Item": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "options": {
+          "$ref": "#/definitions/Options"
+        }
+      },
+      "required": ["code", "options"],
+      "title": "Item"
+    },
+    "Options": {
+      "type": "object",
+      "patternProperties": {
+        "^[0-9]+$": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "prop1": { "type": "string" },
+              "prop2": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
