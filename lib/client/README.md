@@ -31,7 +31,7 @@ To interact with a sell or buy order, use the order hook.
 const order = useOrder(chainId, address);
 
 // Does it's best to find data
-order.metadata.title;
+order.metadata.data.title;
 
 // Submit an offer on the order
 await order.contract.submitOffer(

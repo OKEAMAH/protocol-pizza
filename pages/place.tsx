@@ -1,10 +1,17 @@
 import { useRouter } from "next/router";
+import { useOfferMetadata } from "../lib/client/metadata/useOrderMetadata";
 
 export default function Place() {
   const router = useRouter();
   const orderAddress = (router.query.id as string) || "";
+  const offer = useOfferMetadata(
+    42,
+    "0x21931f2343e1366e938a551c0aa2300ddec8be90",
+    "0xc05c2aadfadb5cdd8ee25ec67832b524003b2e37",
+    0
+  );
 
-  console.log(orderAddress);
+  console.log(offer.data);
 
   // TODO: Get item JSON from rwtp
 

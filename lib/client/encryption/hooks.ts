@@ -7,7 +7,7 @@ import { encrypt } from "./core";
 
 const scope = `Sign this message if you trust this application to encrypt and decrypt private information, such as names, addresses, and emails. It costs nothing to sign this message.`;
 
-const hexRegex = /0[xX][0-9a-fA-F]+/g;
+const hexRegex = /[0-9a-fA-F]+/g;
 
 export function useEncryption() {
   const signer = useSigner();

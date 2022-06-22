@@ -181,20 +181,51 @@ export function useOrdersMetadata(
 // Returns information about a sell order
 export function useOrderMetadata(chainId: number, address: string) {
   const metadata = useSubgraph<{
-    order: OrderData;
+    orders: OrderData[];
   }>(chainId, [
     `
-    query metadata($id:ID ){
-      order(id:$id) {
+    query metadata($address: String){
+      orders(where: {address:$address}) {
         ${ORDER_FIELDS}
       }
     }
     `,
-    { id: address },
+    { address: address },
   ]);
 
   return {
     ...metadata,
-    data: metadata.data?.order,
+    data: metadata.data?.orders[0],
+  };
+}
+
+// Returns information about a sell order
+export function useOfferMetadata(
+  chainId: number,
+  order: string,
+  taker: string,
+  index: number
+) {
+  const metadata = useSubgraph<{
+    offer: OfferData;
+  }>(chainId, [
+    `
+    query data($id: ID){
+      offer(id:$id) {
+        ${OFFER_FIELDS}
+      }
+    }
+    `,
+    { id: `${taker}-${index}-${order}` },
+  ]);
+
+  console.log(`${taker}-${index}-${order}`);
+  // 0xc05c2aaDfAdb5CdD8EE25ec67832B524003B2E37-0-0x21931f2343E1366E938a551C0aA2300DDeC8bE90
+  // 0xc05c2aadfadb5cdd8ee25ec67832b524003b2e37-0-0x21931f2343e1366e938a551c0aa2300ddec8be90
+  // 0xc05c2aaDfAdb5CdD8EE25ec67832B524003B2E37-0-0x21931f2343E1366E938a551C0aA2300DDeC8bE90
+
+  return {
+    ...metadata,
+    data: metadata.data?.offer,
   };
 }

@@ -37,83 +37,91 @@ export default function Landing() {
   }, [storeID]);
 
   return (
-    <AppHeader>
-      <div className="bg-orange-50 h-full">
-        <div className="max-w-2xl mx-auto px-5 py-10 flex flex-col gap-10">
-          <p className="text-3xl text-center">Order Pizza</p>
-          <div className="flex flex-col gap-5 max-w-md mx-auto px-2">
-            <CustomerBuilder
-              customer={customer}
-              setCustomer={setCustomer}
-              setCustomerIsValid={setCustomerIsValid}
-            />
-            {customerIsValid && (
-              <>
-                <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-                <AddressBuilder
-                  address={address}
-                  setAddress={setAddress}
-                  setAddressIsValid={setAddressIsValid}
-                />
-              </>
-            )}
-            {addressIsValid && (
-              <>
-                <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-                <StoreFinder
-                  address={address}
-                  storeID={storeID}
-                  setStoreID={setStoreID}
-                />
-              </>
-            )}
-            {storeID && (
-              <>
-                <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-                <ItemBuilder
-                  storeID={storeID}
-                  customer={customer}
-                  address={address}
-                  items={items}
-                  setItems={setItems}
-                  setOrder={setOrder}
-                />
-              </>
-            )}
-            {items.length > 0 && (
-              <>
-                <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-                <OrderBuilder
-                  storeID={storeID}
-                  customer={customer}
-                  address={address}
-                  items={items}
-                  setItems={setItems}
-                  order={order}
-                  setOrder={setOrder}
-                />
-              </>
-            )}
-            {order.orderID && (
-              <>
-                <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-                <PostOrder order={order} />
-              </>
-            )}
+    <div className="flex h-full flex-1  flex-col justify-between">
+      <AppHeader>
+        <div className="">
+          <div className="max-w-2xl mx-auto px-5 py-10 flex flex-col gap-10">
+            <p className="text-3xl text-center">Order Pizza</p>
+            <div className="flex flex-col gap-5 max-w-md mx-auto px-2">
+              <CustomerBuilder
+                customer={customer}
+                setCustomer={setCustomer}
+                setCustomerIsValid={setCustomerIsValid}
+              />
+              {customerIsValid && (
+                <>
+                  <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
+                  <AddressBuilder
+                    address={address}
+                    setAddress={setAddress}
+                    setAddressIsValid={setAddressIsValid}
+                  />
+                </>
+              )}
+              {addressIsValid && (
+                <>
+                  <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
+                  <StoreFinder
+                    address={address}
+                    storeID={storeID}
+                    setStoreID={setStoreID}
+                  />
+                </>
+              )}
+              {storeID && (
+                <>
+                  <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
+                  <ItemBuilder
+                    storeID={storeID}
+                    customer={customer}
+                    address={address}
+                    items={items}
+                    setItems={setItems}
+                    setOrder={setOrder}
+                  />
+                </>
+              )}
+              {items.length > 0 && (
+                <>
+                  <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
+                  <OrderBuilder
+                    storeID={storeID}
+                    customer={customer}
+                    address={address}
+                    items={items}
+                    setItems={setItems}
+                    order={order}
+                    setOrder={setOrder}
+                  />
+                </>
+              )}
+              {order.orderID && (
+                <>
+                  <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
+                  <PostOrder
+                    pizza={order}
+                    storeID={storeID}
+                    customer={customer}
+                    address={address}
+                    items={items}
+                  />
+                </>
+              )}
+            </div>
           </div>
-          <div>
-            <p className="text-3xl font-serif italic">
-              "Blockchain technologies facilitate few, if any, real-economy
-              uses."
-            </p>
-            <p className="text">
-              - Someone who hasn't bought a pizza with crypto
-            </p>
-          </div>
-          <p className="text-3xl text-center">How it Works</p>
-          <p>TODO</p>
         </div>
+      </AppHeader>
+      <div className="bg-black w-full text-white px-2 py-4">
+        <p className="text-sm">
+          <span className=" italic">
+            "Blockchain technologies facilitate few, if any, real-economy uses."
+          </span>
+          <span className="">
+            {" "}
+            - Someone who hasn't bought a pizza with crypto
+          </span>
+        </p>
       </div>
-    </AppHeader>
+    </div>
   );
 }

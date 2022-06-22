@@ -17,8 +17,8 @@ export function AppHeader(props: {
     hash: props.txHash,
   });
   return (
-    <div className="h-full">
-      <div className="flex flex-row items-center justify-between p-5 gap-2">
+    <div className="flex-grow ">
+      <div className="flex sm:flex-row flex-col-reverse items-center justify-between p-5 gap-4">
         <div className="flex gap-2">
           <div className="text-3xl">🍕</div>
           <div className="flex flex-col">
