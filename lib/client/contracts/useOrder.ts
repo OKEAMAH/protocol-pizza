@@ -1,8 +1,7 @@
-import { useSubgraph } from "../metadata/useSubgraph";
 import { Order } from "rwtp";
 import { BigNumber, Transaction } from "ethers";
 import { useOrderMetadata } from "../metadata/useOrderMetadata";
-import { useContract, useContractWrite, useSigner } from "wagmi";
+import { useContract, useSigner } from "wagmi";
 
 interface OrderMethods {
   submitOffer: (

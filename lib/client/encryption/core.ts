@@ -1,6 +1,6 @@
-import { Signer } from 'ethers';
-import { signatureToPrivateKey } from 'rwtp';
-import nacl from 'tweetnacl';
+import { Signer } from "ethers";
+import { signatureToPrivateKey } from "rwtp";
+import nacl from "tweetnacl";
 
 // Creates an encryption key
 export async function createEncryptionKey(signer: Signer, scope: string) {
@@ -21,14 +21,14 @@ interface EncryptedMessage {
 }
 
 export function toHex(arr: Uint8Array) {
-  return Buffer.from(arr).toString('hex');
+  return Buffer.from(arr).toString("hex");
 }
 
 export function encrypt(args: EncryptionParameters): EncryptedMessage {
-  const secretDataUTF8 = Buffer.from(args.message, 'utf-8');
+  const secretDataUTF8 = Buffer.from(args.message, "utf-8");
   const nonce = nacl.randomBytes(24);
   const sellersPublicEncryptionKey = Uint8Array.from(
-    Buffer.from(args.receiverPublicEncryptionKey, 'hex')
+    Buffer.from(args.receiverPublicEncryptionKey, "hex")
   );
   const encrypted = nacl.box(
     secretDataUTF8,

@@ -1,6 +1,4 @@
 import { useSubgraph } from "./useSubgraph";
-import { Order } from "rwtp";
-import { BigNumber } from "ethers";
 
 export interface ERC20Data {
   decimals: number;

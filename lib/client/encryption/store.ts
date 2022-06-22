@@ -1,5 +1,5 @@
-import create from 'zustand';
-import { persist } from 'zustand/middleware';
+import create from "zustand";
+import { persist } from "zustand/middleware";
 
 type EncryptionState = {
   privateKey?: Uint8Array;
@@ -15,7 +15,7 @@ export const useEncryptionStore = create<EncryptionState>()(
       setPrivateKey: (privateKey: Uint8Array) => set({ privateKey }),
     }),
     {
-      name: 'encryption',
+      name: "encryption",
     }
   )
 );

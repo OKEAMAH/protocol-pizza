@@ -1,5 +1,5 @@
 import { LockClosedIcon, RefreshIcon } from "@heroicons/react/solid";
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
 import { useState } from "react";
 import { useNetwork } from "wagmi";
 import { useOrder } from "../lib/client/contracts/useOrder";
@@ -12,7 +12,7 @@ import { OrderRequestBody } from "../lib/useDominos";
 const chains: any = {
   137: "", // Polygon
   10: "", // OPTIMISM
-  42: "0x21931f2343E1366E938a551C0aA2300DDeC8bE90", // KOVAN
+  42: "0xfB748F1854631fD5deb4D5B27E1bbD0728C3a278", // KOVAN
 };
 
 export default function PostOrder({
@@ -39,8 +39,6 @@ export default function PostOrder({
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  console.log(order.metadata.data);
-
   async function onSubmit() {
     if (!order.metadata.data?.encryptionPublicKey) {
       console.error("Order has no encryption key");
@@ -61,14 +59,12 @@ export default function PostOrder({
       JSON.stringify(json)
     );
 
-    console.log(data);
-
     const cid = await postJSONToIPFS(data);
 
     // Submit offer
     setLoadingMessage("Submitting");
     await order.contract.submitOffer(
-      BigNumber.from(0),
+      BigNumber.from(`0x${Buffer.from(utils.randomBytes(16)).toString("hex")}`),
       tokenAddress,
       BigNumber.from(paymentAmount),
       BigNumber.from(buyerCost),
