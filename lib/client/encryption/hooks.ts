@@ -1,6 +1,6 @@
 import { useSigner } from "wagmi";
 import { useCallback } from "react";
-import { createEncryptionKey, toHex } from "./core";
+import { createEncryptionKey, decrypt, toHex } from "./core";
 import { useEncryptionStore } from "./store";
 import nacl from "tweetnacl";
 import { encrypt } from "./core";
@@ -24,6 +24,52 @@ export function useEncryption() {
 
     store.setPrivateKey(key);
   }, [signer.data, store]);
+
+  const _decrypt = useCallback(
+    async (
+      senderPublicEncryptionKey: string,
+      message: string,
+      nonce: string
+    ) => {
+      if (!hexRegex.test(senderPublicEncryptionKey)) {
+        // If you get this error, the public key might be corrupted / bad.
+        // Check if it's null or empty. If it's not, check that it's
+        // a valid hex string.
+        //
+        // If the key is in a different format, like base64, consider
+        // converting it to hex first.
+        throw new Error(
+          "receiverPublicEncryptionKey is not a hexidecimal string."
+        );
+      }
+
+      if (!store.privateKey) {
+        // If you're getting this error, you need to prompt the user to sign a
+        // messsage with .generate() first. For example:
+        //
+        //   const encryption = useEncryption();
+        //   await encryption.generate();
+        //
+        throw new Error(
+          "Cannot encrypt before generating a private key with encryption.generate()"
+        );
+      }
+
+      const keypair = nacl.box.keyPair.fromSecretKey(
+        toUint8Array(store.privateKey)
+      );
+
+      const result = decrypt({
+        messageStr: message,
+        nonceStr: nonce,
+        theirPublicKeyStr: senderPublicEncryptionKey,
+        mySecretKeyStr: toHex(keypair.secretKey),
+      });
+
+      return result;
+    },
+    [store]
+  );
 
   const _encrypt = useCallback(
     async (receiverPublicEncryptionKey: string, message: string) => {
@@ -74,6 +120,7 @@ export function useEncryption() {
   return {
     generate: _generate,
     encrypt: _encrypt,
+    decrypt: _decrypt,
     hasKey,
     scope: scope,
     keypair: store.privateKey

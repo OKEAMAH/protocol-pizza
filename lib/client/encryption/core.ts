@@ -41,3 +41,23 @@ export function encrypt(args: EncryptionParameters): EncryptedMessage {
     encrypted,
   };
 }
+
+export function decrypt(args: {
+  messageStr: string;
+  nonceStr: string;
+  theirPublicKeyStr: string;
+  mySecretKeyStr: string;
+}): string {
+  const message = Uint8Array.from(Buffer.from(args.messageStr, "hex"));
+  const nonce = Uint8Array.from(Buffer.from(args.nonceStr, "hex"));
+  const theirPublicKey = Uint8Array.from(
+    Buffer.from(args.theirPublicKeyStr, "hex")
+  );
+  const mySecretKey = Uint8Array.from(Buffer.from(args.mySecretKeyStr, "hex"));
+
+  const data = nacl.box.open(message, nonce, theirPublicKey, mySecretKey);
+  if (!data) {
+    throw new Error("Failed to decrypt message");
+  }
+  return data?.toString();
+}
