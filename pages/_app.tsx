@@ -40,8 +40,8 @@ function MyApp({ Component, pageProps }: AppProps) {
           <title>Protocol Pizza</title>
         </Head>
         <Script
-          src="https://bluejeans.rwtp.org/script.js"
-          data-site="CAQMFJOY"
+          src="https://cdn.usefathom.com/script.js"
+          data-site="IAVMINES"
           defer
         />
       </RainbowKitProvider>
