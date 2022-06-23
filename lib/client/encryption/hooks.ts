@@ -1,5 +1,5 @@
 import { useAccount, useSigner } from "wagmi";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback } from "react";
 import { createEncryptionKey, decrypt, toHex } from "./core";
 import { useEncryptionStore } from "./store";
 import nacl from "tweetnacl";
@@ -7,29 +7,13 @@ import { encrypt } from "./core";
 
 const scope = `Sign this message if you trust this application to access private information, such as names, addresses, and emails. It costs nothing to sign this message.`;
 
-// function usePrevious(value: any) {
-//   const ref = useRef();
-//   useEffect(() => {
-//     ref.current = value;
-//   });
-//   return ref.current;
-// }
-
-// function useOnSwitchWallet(cb: (address: string) => any) {
-//   const account = useAccount();
-//   const previous = usePrevious(account.data?.address);
-
-//   useEffect(() => {
-
-//   }, [])
-// }
-
 export function useEncryption() {
   const signer = useSigner();
   const account = useAccount();
   const store = useEncryptionStore();
-  const hasKey = !!(account.data?.address && store.privateKeys[account.data?.address])
-
+  const hasKey = !!(
+    account.data?.address && store.privateKeys[account.data?.address]
+  );
 
   // Creates an encryption key, and stores it.
   const _generate = useCallback(async () => {
@@ -87,7 +71,7 @@ export function useEncryption() {
 
       return result;
     },
-    [store]
+    [store, account.data?.address]
   );
 
   const _encrypt = useCallback(
@@ -134,7 +118,7 @@ export function useEncryption() {
         scope: scope,
       };
     },
-    [store]
+    [store, account.data?.address]
   );
 
   return {
@@ -144,7 +128,9 @@ export function useEncryption() {
     hasKey,
     scope: scope,
     keypair: store.privateKeys[account.data?.address || ""]
-      ? nacl.box.keyPair.fromSecretKey(toUint8Array(store.privateKeys[account.data?.address || ""]))
+      ? nacl.box.keyPair.fromSecretKey(
+          toUint8Array(store.privateKeys[account.data?.address || ""])
+        )
       : undefined,
   };
 }

@@ -4,12 +4,11 @@ import { useState } from "react";
 import { useNetwork } from "wagmi";
 import { useOrder } from "../lib/client/contracts/useOrder";
 import { useEncryption } from "../lib/client/encryption/hooks";
-import { OrderData } from "../lib/client/metadata/useOrderMetadata";
 import { CHAINS } from "../lib/constants";
 import { Customer, Address } from "../lib/customer";
 import { postJSONToIPFS } from "../lib/ipfs";
 import { Item, Order } from "../lib/item";
-import { formatTokenAmount, useTokenMethods } from "../lib/tokens";
+import { useTokenMethods } from "../lib/tokens";
 import { OrderRequestBody } from "../lib/useDominos";
 
 export default function PostOrder({
@@ -65,9 +64,7 @@ export default function PostOrder({
     );
 
     // Approve tokens
-    setLoadingMessage(
-      `Requesting tokens`
-    );
+    setLoadingMessage(`Requesting tokens`);
     const approveTxHash = await approveTokens(decimals);
     if (!approveTxHash) return;
 

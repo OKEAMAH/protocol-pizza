@@ -72,7 +72,7 @@ export async function place(
     expiration: process.env.CARD_EXPIRATION_DATE,
     securityCode: process.env.CARD_SECURITY_CODE,
     postalCode: process.env.CARD_POSTAL_CODE,
-    tipAmount: Math.round(order.amountsBreakdown.customer * .2 * 100) / 100,
+    tipAmount: Math.round(order.amountsBreakdown.customer * 0.2 * 100) / 100,
   });
   order.payments.push(card);
 

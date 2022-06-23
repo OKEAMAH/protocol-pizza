@@ -65,7 +65,7 @@ export function AppHeader(props: {
                         className="bg-white text-base sm:text-lg rounded-xl px-3 py-2 flex items-center gap-1"
                         onClick={() => openChainModal()}
                       >
-                        Switch Network{' '}
+                        Switch Network{" "}
                         <SwitchHorizontalIcon className="h-4 w-4 ml-2" />
                       </button>
                     );

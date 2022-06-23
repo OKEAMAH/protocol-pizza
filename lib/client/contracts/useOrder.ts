@@ -3,6 +3,7 @@ import { BigNumber, Transaction } from "ethers";
 import { useOrderMetadata } from "../metadata/useOrderMetadata";
 import { useContract, useSigner } from "wagmi";
 
+/* eslint-disable unused-imports/no-unused-vars */
 interface OrderMethods {
   submitOffer: (
     index: BigNumber,
@@ -13,11 +14,9 @@ interface OrderMethods {
     timeout: BigNumber,
     uri: string
   ) => Promise<Transaction>;
-  commit: (
-    taker: string,
-    index: BigNumber
-  ) => Promise<Transaction>;
+  commit: (taker: string, index: BigNumber) => Promise<Transaction>;
 }
+/* eslint-enable unused-imports/no-unused-vars */
 
 // Lets you use the metadata from useOrderMetadata and useContract from ethers
 export function useOrder(chainId: number, address: string) {

@@ -1,7 +1,7 @@
-import { useContractWrite, useContractRead } from 'wagmi';
-import { BigNumber } from 'ethers';
-import { fromBn } from 'evm-bn';
-import { ERC20 } from './erc20';
+import { useContractWrite, useContractRead } from "wagmi";
+import { BigNumber } from "ethers";
+import { fromBn } from "evm-bn";
+import { ERC20 } from "./erc20";
 
 export interface ERC20Data {
   decimals: number;
@@ -16,7 +16,7 @@ export function useTokenMethods(address: string) {
       addressOrName: address,
       contractInterface: ERC20.abi,
     },
-    'approve'
+    "approve"
   );
 
   const decimals = useContractRead(
@@ -24,7 +24,7 @@ export function useTokenMethods(address: string) {
       addressOrName: address,
       contractInterface: ERC20.abi,
     },
-    'decimals'
+    "decimals"
   );
 
   const useBalance = (args: any) =>
@@ -33,7 +33,7 @@ export function useTokenMethods(address: string) {
         addressOrName: address,
         contractInterface: ERC20.abi,
       },
-      'balanceOf',
+      "balanceOf",
       {
         args: args,
       }

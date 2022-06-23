@@ -81,7 +81,9 @@ export default function StoreFinder({
               <p>Select Store</p>
               <p className="text-right underline opacity-50">estimated wait</p>
             </div>
-            <p className="font-mono text-xs">We recommend selecting the closest.</p>
+            <p className="font-mono text-xs">
+              We recommend selecting the closest.
+            </p>
             {stores.map((store) => {
               // if (!store.ServiceMethodEstimatedWaitMinutes.Delivery) {
               // console.log(store);
