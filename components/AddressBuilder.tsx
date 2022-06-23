@@ -79,6 +79,18 @@ export default function AddressBuilder({
             }}
           ></input>
         </div>
+        <input
+          className={"bg-gray-100 rounded-xl px-3 py-1 w-full ".concat(
+            errors.get("city") ? " border border-red-500" : ""
+          )}
+          placeholder="Delivery Notes"
+          onChange={(event) => {
+            setAddress((address) => ({
+              ...address,
+              deliveryInstructions: event.target.value,
+            }));
+          }}
+        ></input>
       </div>
     </>
   );

@@ -186,10 +186,15 @@ export default function Place() {
                 <div className="flex-grow min-h-0"></div>
                 <p>${pizza.amountsBreakdown.tax}</p>
               </div>
+              <div className="flex gap-1 items-center w-full">
+                <p>Tip (20%)</p>
+                <div className="flex-grow min-h-0"></div>
+                <p>${pizza.amountsBreakdown.customer * .2}</p>
+              </div>
               <div className="flex gap-1 items-center border-t-2 w-full">
                 <p className="font-bold">Total (USD)</p>
                 <div className="flex-grow min-h-0"></div>
-                <p className="font-bold">${pizza.amountsBreakdown.customer}</p>
+                <p className="font-bold">${pizza.amountsBreakdown.customer + (pizza.amountsBreakdown.customer * .2)}</p>
               </div>
             </div>
           </div>
