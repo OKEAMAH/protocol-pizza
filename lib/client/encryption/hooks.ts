@@ -5,7 +5,7 @@ import { useEncryptionStore } from "./store";
 import nacl from "tweetnacl";
 import { encrypt } from "./core";
 
-const scope = `Sign this message if you trust this application to encrypt and decrypt private information, such as names, addresses, and emails. It costs nothing to sign this message.`;
+const scope = `Sign this message if you trust this application to access private information, such as names, addresses, and emails. It costs nothing to sign this message.`;
 
 const hexRegex = /[0-9a-fA-F]+/g;
 
@@ -39,7 +39,7 @@ export function useEncryption() {
         // If the key is in a different format, like base64, consider
         // converting it to hex first.
         throw new Error(
-          "receiverPublicEncryptionKey is not a hexidecimal string."
+          "senderPublicEncryptionKey is not a hexidecimal string."
         );
       }
 

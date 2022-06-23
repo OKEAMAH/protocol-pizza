@@ -59,5 +59,5 @@ export function decrypt(args: {
   if (!data) {
     throw new Error("Failed to decrypt message");
   }
-  return data?.toString();
+  return new TextDecoder().decode(data);
 }

@@ -4,16 +4,11 @@ import { useState } from "react";
 import { useNetwork } from "wagmi";
 import { useOrder } from "../lib/client/contracts/useOrder";
 import { useEncryption } from "../lib/client/encryption/hooks";
+import { CHAINS } from "../lib/constants";
 import { Customer, Address } from "../lib/customer";
 import { postJSONToIPFS } from "../lib/ipfs";
 import { Item, Order } from "../lib/item";
 import { OrderRequestBody } from "../lib/useDominos";
-
-const chains: any = {
-  137: "", // Polygon
-  10: "", // OPTIMISM
-  42: "0xfB748F1854631fD5deb4D5B27E1bbD0728C3a278", // KOVAN
-};
 
 export default function PostOrder({
   pizza,
@@ -31,7 +26,7 @@ export default function PostOrder({
   const encryption = useEncryption();
   const network = useNetwork();
   const id = network.activeChain?.id || 42;
-  const order = useOrder(network.activeChain?.id || 42, chains[id]);
+  const order = useOrder(network.activeChain?.id || 42, CHAINS[id]);
   const [tokenAddress, setTokenAddress] = useState("");
   const [paymentAmount, setPaymentAmount] = useState<number>();
   const [sellerDeposit, setSellerDeposit] = useState<number>();
@@ -181,10 +176,10 @@ export default function PostOrder({
         <p className="break-words">
           Your offer has been submitted! You can check its status at:{" "}
           <a
-            href={"https://www.rwtp.org/buy/" + chains[id]}
+            href="https://www.rwtp.org/account/purchases"
             className="underline text-blue-500"
           >
-            https://www.rwtp.org/buy/{chains[id]}
+            https://www.rwtp.org/account/purchases
           </a>
         </p>
       )}

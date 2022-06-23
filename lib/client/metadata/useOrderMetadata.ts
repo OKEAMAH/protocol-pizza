@@ -1,3 +1,4 @@
+import { BigNumber } from "ethers";
 import { useSubgraph } from "./useSubgraph";
 
 export interface ERC20Data {
@@ -202,7 +203,7 @@ export function useOfferMetadata(
   chainId: number,
   order: string,
   taker: string,
-  index: number
+  index: BigNumber
 ) {
   const metadata = useSubgraph<{
     offer: OfferData;
@@ -216,8 +217,6 @@ export function useOfferMetadata(
     `,
     { id: `${taker}-${index}-${order}` },
   ]);
-
-  console.log(`${taker}-${index}-${order}`);
   // 0xc05c2aaDfAdb5CdD8EE25ec67832B524003B2E37-0-0x21931f2343E1366E938a551C0aA2300DDeC8bE90
   // 0xc05c2aadfadb5cdd8ee25ec67832b524003b2e37-0-0x21931f2343e1366e938a551c0aa2300ddec8be90
   // 0xc05c2aaDfAdb5CdD8EE25ec67832B524003B2E37-0-0x21931f2343E1366E938a551C0aA2300DDeC8bE90

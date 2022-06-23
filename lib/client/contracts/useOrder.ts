@@ -13,6 +13,10 @@ interface OrderMethods {
     timeout: BigNumber,
     uri: string
   ) => Promise<Transaction>;
+  commit: (
+    taker: string,
+    index: BigNumber
+  ) => Promise<Transaction>;
 }
 
 // Lets you use the metadata from useOrderMetadata and useContract from ethers
