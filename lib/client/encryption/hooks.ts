@@ -1,5 +1,5 @@
-import { useSigner } from "wagmi";
-import { useCallback } from "react";
+import { useAccount, useSigner } from "wagmi";
+import { useCallback, useEffect, useRef } from "react";
 import { createEncryptionKey, decrypt, toHex } from "./core";
 import { useEncryptionStore } from "./store";
 import nacl from "tweetnacl";
@@ -7,12 +7,29 @@ import { encrypt } from "./core";
 
 const scope = `Sign this message if you trust this application to access private information, such as names, addresses, and emails. It costs nothing to sign this message.`;
 
-const hexRegex = /[0-9a-fA-F]+/g;
+// function usePrevious(value: any) {
+//   const ref = useRef();
+//   useEffect(() => {
+//     ref.current = value;
+//   });
+//   return ref.current;
+// }
+
+// function useOnSwitchWallet(cb: (address: string) => any) {
+//   const account = useAccount();
+//   const previous = usePrevious(account.data?.address);
+
+//   useEffect(() => {
+
+//   }, [])
+// }
 
 export function useEncryption() {
   const signer = useSigner();
+  const account = useAccount();
   const store = useEncryptionStore();
-  const hasKey = !!store.privateKey;
+  const hasKey = !!(account.data?.address && store.privateKeys[account.data?.address])
+
 
   // Creates an encryption key, and stores it.
   const _generate = useCallback(async () => {
@@ -22,7 +39,7 @@ export function useEncryption() {
     }
     const key = await createEncryptionKey(signer.data, scope);
 
-    store.setPrivateKey(key);
+    store.setPrivateKey(await signer.data.getAddress(), key);
   }, [signer.data, store]);
 
   const _decrypt = useCallback(
@@ -31,6 +48,7 @@ export function useEncryption() {
       message: string,
       nonce: string
     ) => {
+      const hexRegex = /[0-9a-fA-F]+/g;
       if (!hexRegex.test(senderPublicEncryptionKey)) {
         // If you get this error, the public key might be corrupted / bad.
         // Check if it's null or empty. If it's not, check that it's
@@ -38,12 +56,13 @@ export function useEncryption() {
         //
         // If the key is in a different format, like base64, consider
         // converting it to hex first.
+        console.log(senderPublicEncryptionKey);
         throw new Error(
           "senderPublicEncryptionKey is not a hexidecimal string."
         );
       }
 
-      if (!store.privateKey) {
+      if (!store.privateKeys[account.data?.address || ""]) {
         // If you're getting this error, you need to prompt the user to sign a
         // messsage with .generate() first. For example:
         //
@@ -56,7 +75,7 @@ export function useEncryption() {
       }
 
       const keypair = nacl.box.keyPair.fromSecretKey(
-        toUint8Array(store.privateKey)
+        toUint8Array(store.privateKeys[account.data?.address || ""])
       );
 
       const result = decrypt({
@@ -73,6 +92,7 @@ export function useEncryption() {
 
   const _encrypt = useCallback(
     async (receiverPublicEncryptionKey: string, message: string) => {
+      const hexRegex = /[0-9a-fA-F]+/g;
       if (!hexRegex.test(receiverPublicEncryptionKey)) {
         // If you get this error, the public key might be corrupted / bad.
         // Check if it's null or empty. If it's not, check that it's
@@ -85,7 +105,7 @@ export function useEncryption() {
         );
       }
 
-      if (!store.privateKey) {
+      if (!store.privateKeys[account.data?.address || ""]) {
         // If you're getting this error, you need to prompt the user to sign a
         // messsage with .generate() first. For example:
         //
@@ -98,7 +118,7 @@ export function useEncryption() {
       }
 
       const keypair = nacl.box.keyPair.fromSecretKey(
-        toUint8Array(store.privateKey)
+        toUint8Array(store.privateKeys[account.data?.address || ""])
       );
 
       const result = encrypt({
@@ -123,8 +143,8 @@ export function useEncryption() {
     decrypt: _decrypt,
     hasKey,
     scope: scope,
-    keypair: store.privateKey
-      ? nacl.box.keyPair.fromSecretKey(toUint8Array(store.privateKey))
+    keypair: store.privateKeys[account.data?.address || ""]
+      ? nacl.box.keyPair.fromSecretKey(toUint8Array(store.privateKeys[account.data?.address || ""]))
       : undefined,
   };
 }

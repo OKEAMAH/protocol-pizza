@@ -59,17 +59,17 @@ export function AppHeader(props: {
                     );
                   }
 
-                  //   if (chain.id != chainId) {
-                  //     return (
-                  //       <button
-                  //         className="bg-white  text-sm border-black rounded-xl px-3 py-1 flex items-center"
-                  //         onClick={() => switchNetwork(chainId)}
-                  //       >
-                  //         Switch Network{' '}
-                  //         <SwitchHorizontalIcon className="h-4 w-4 ml-2" />
-                  //       </button>
-                  //     );
-                  //   }
+                  if (chain.id != 42 && chain.id != 137) {
+                    return (
+                      <button
+                        className="bg-white text-base sm:text-lg rounded-xl px-3 py-2 flex items-center gap-1"
+                        onClick={() => openChainModal()}
+                      >
+                        Switch Network{' '}
+                        <SwitchHorizontalIcon className="h-4 w-4 ml-2" />
+                      </button>
+                    );
+                  }
 
                   const keyDetails = (
                     <>

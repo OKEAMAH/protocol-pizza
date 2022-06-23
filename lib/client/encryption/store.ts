@@ -2,8 +2,10 @@ import create from "zustand";
 import { persist } from "zustand/middleware";
 
 type EncryptionState = {
-  privateKey?: Uint8Array;
-  setPrivateKey: (_privateKey: Uint8Array) => void;
+  privateKeys: {
+    [address: string]: Uint8Array;
+  }
+  setPrivateKey: (_address: string, _privateKey: Uint8Array) => void;
 };
 
 /**
@@ -12,7 +14,11 @@ type EncryptionState = {
 export const useEncryptionStore = create<EncryptionState>()(
   persist(
     (set: any) => ({
-      setPrivateKey: (privateKey: Uint8Array) => set({ privateKey }),
+      setPrivateKey: (address: string, privateKey: Uint8Array) => set((state: EncryptionState) => {
+        state.privateKeys[address] = privateKey
+        return {...state}
+      }),
+      privateKeys: {}
     }),
     {
       name: "encryption",

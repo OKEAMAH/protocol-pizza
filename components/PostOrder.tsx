@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useNetwork } from "wagmi";
 import { useOrder } from "../lib/client/contracts/useOrder";
 import { useEncryption } from "../lib/client/encryption/hooks";
+import { OrderData } from "../lib/client/metadata/useOrderMetadata";
 import { CHAINS } from "../lib/constants";
 import { Customer, Address } from "../lib/customer";
 import { postJSONToIPFS } from "../lib/ipfs";
 import { Item, Order } from "../lib/item";
+import { formatTokenAmount, useTokenMethods } from "../lib/tokens";
 import { OrderRequestBody } from "../lib/useDominos";
 
 export default function PostOrder({
@@ -28,6 +30,7 @@ export default function PostOrder({
   const id = network.activeChain?.id || 42;
   const order = useOrder(network.activeChain?.id || 42, CHAINS[id]);
   const [tokenAddress, setTokenAddress] = useState("");
+  const tokenMethods = useTokenMethods(tokenAddress);
   const [paymentAmount, setPaymentAmount] = useState<number>();
   const [sellerDeposit, setSellerDeposit] = useState<number>();
   const [buyerCost, setBuyerCost] = useState<number>();
@@ -56,19 +59,53 @@ export default function PostOrder({
 
     const cid = await postJSONToIPFS(data);
 
+    if (!tokenMethods.decimals.data) return;
+    const decimals = BigNumber.from(
+      Math.pow(10, Number.parseInt(tokenMethods.decimals.data.toString()))
+    );
+
+    // Approve tokens
+    setLoadingMessage(
+      `Requesting tokens`
+    );
+    const approveTxHash = await approveTokens(decimals);
+    if (!approveTxHash) return;
+
     // Submit offer
     setLoadingMessage("Submitting");
     await order.contract.submitOffer(
-      BigNumber.from(`0x${Buffer.from(utils.randomBytes(16)).toString("hex")}`),
+      BigNumber.from(`0x${Buffer.from(utils.randomBytes(16)).toString("hex")}`), // random index
       tokenAddress,
-      BigNumber.from(paymentAmount),
-      BigNumber.from(buyerCost),
-      BigNumber.from(sellerDeposit),
-      BigNumber.from(60 * 60 * 24 * 2),
+      BigNumber.from(paymentAmount).mul(decimals),
+      BigNumber.from(buyerCost).mul(decimals),
+      BigNumber.from(sellerDeposit).mul(decimals),
+      BigNumber.from(60 * 60 * 24 * 2), // 2 day timeout
       `ipfs://${cid}`
     );
     setLoadingMessage("");
     setIsSuccess(true);
+  }
+
+  function transferAmount(decimals: BigNumber): BigNumber {
+    const price = BigNumber.from(paymentAmount).mul(decimals);
+    const cost = BigNumber.from(buyerCost).mul(decimals);
+    return cost.gt(price) ? price.add(cost.sub(price)) : price;
+  }
+
+  async function approveTokens(
+    decimals: BigNumber
+  ): Promise<string | undefined> {
+    if (!order.metadata.data) return;
+    try {
+      const tx = await tokenMethods.approve.writeAsync({
+        args: [CHAINS[id], transferAmount(decimals)],
+      });
+      await tx.wait();
+      return tx.hash;
+    } catch (error) {
+      console.log(error);
+      return undefined;
+    }
   }
 
   async function onGenerate() {
@@ -91,13 +128,16 @@ export default function PostOrder({
     );
   }
 
+  const tip = Math.round(pizza.amountsBreakdown.customer * 0.2 * 100) / 100;
+  const total = Math.round((pizza.amountsBreakdown.customer + tip) * 100) / 100;
+
   return (
     <>
       {!isSuccess && (
         <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
           <p>Post Order</p>
           <div>
-            <p className="text-sm mb-1">Summary</p>
+            <p className="text-sm mb-1">Order Cost</p>
             <div className="text-sm bg-gray-100 p-2 rounded-xl">
               {pizza.products.map((product) => {
                 return (
@@ -124,15 +164,16 @@ export default function PostOrder({
               <div className="flex gap-1 items-center w-full">
                 <p>Tip (20%)</p>
                 <div className="flex-grow min-h-0"></div>
-                <p>${pizza.amountsBreakdown.customer * .2}</p>
+                <p>${tip}</p>
               </div>
               <div className="flex gap-1 items-center border-t-2 w-full">
                 <p className="font-bold">Total (USD)</p>
                 <div className="flex-grow min-h-0"></div>
-                <p className="font-bold">${pizza.amountsBreakdown.customer + (pizza.amountsBreakdown.customer * .2)}</p>
+                <p className="font-bold">${total}</p>
               </div>
             </div>
           </div>
+          <p className="text-sm">Your Offer</p>
           <input
             className="bg-gray-100 rounded-xl px-3 py-1 w-full "
             placeholder="Token Address"
@@ -162,12 +203,28 @@ export default function PostOrder({
             onChange={(e) => setBuyerCost(parseFloat(e.target.value))}
           ></input>
           {!loadingMessage && (
-            <button
-              className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
-              onClick={() => onSubmit()}
-            >
-              Post Order
-            </button>
+            <>
+              {!tokenMethods.decimals.data &&
+                !tokenMethods.decimals.isLoading && (
+                  <button className="w-full bg-red-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
+                    Invalid Token
+                  </button>
+                )}
+              {!tokenMethods.decimals.data &&
+                tokenMethods.decimals.isLoading && (
+                  <button className="w-full bg-gray-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
+                    Loading Token
+                  </button>
+                )}
+              {tokenMethods.decimals.data && (
+                <button
+                  className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
+                  onClick={() => onSubmit()}
+                >
+                  Post Order
+                </button>
+              )}
+            </>
           )}
           {loadingMessage && (
             <div className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1">

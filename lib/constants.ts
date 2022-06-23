@@ -1,5 +1,4 @@
 export const CHAINS: any = {
-  137: "", // Polygon
-  10: "", // OPTIMISM
+  137: "0x45dC04479130e47441E32d8fF2D1321F00445C2A", // Polygon
   42: "0x9cd6eda515Fc6E17bf650579ac64c99dCEC0aa85", // KOVAN
 };

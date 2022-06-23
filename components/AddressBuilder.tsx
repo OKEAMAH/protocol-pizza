@@ -81,7 +81,7 @@ export default function AddressBuilder({
         </div>
         <input
           className={"bg-gray-100 rounded-xl px-3 py-1 w-full ".concat(
-            errors.get("city") ? " border border-red-500" : ""
+            errors.get("deliveryInstructions") ? " border border-red-500" : ""
           )}
           placeholder="Delivery Notes"
           onChange={(event) => {
