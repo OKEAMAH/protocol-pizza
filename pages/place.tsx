@@ -1,7 +1,7 @@
 import { BigNumber } from "ethers";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useNetwork, useSigner } from "wagmi";
+import { useNetwork } from "wagmi";
 import { useOrder } from "../lib/client/contracts/useOrder";
 import { useEncryption } from "../lib/client/encryption/hooks";
 import { useOfferMetadata } from "../lib/client/metadata/useOrderMetadata";
@@ -22,12 +22,15 @@ export default function Place() {
   const [address, setAddress] = useState<Address>();
   const [items, setItems] = useState<Item[]>();
   const [password, setPassword] = useState<string>();
-  const orderAddress = (router.query.id as string) || "";
+  const chainId = (router.query.chainId as string) || "";
+  const orderAddress = (router.query.order as string) || "";
+  const taker = (router.query.taker as string) || "";
+  const index = (router.query.index as string) || "0";
   const offer = useOfferMetadata(
-    42,
-    "0x9cd6eda515fc6e17bf650579ac64c99dcec0aa85",
-    "0x8b96a5e5307a9c6cfa434964a23c915d70711237",
-    BigNumber.from("254257715382390708235420601012216888794")
+    Number.parseInt(chainId),
+    orderAddress,
+    taker,
+    BigNumber.from(index)
   );
   const [plaintextMessage, setPlaintextMessage] = useState<string>();
 
