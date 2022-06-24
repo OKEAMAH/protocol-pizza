@@ -30,9 +30,9 @@ export default function PostOrder({
   const order = useOrder(network.activeChain?.id || 42, CHAINS[id]);
   const [tokenAddress, setTokenAddress] = useState("");
   const tokenMethods = useTokenMethods(tokenAddress);
-  const [paymentAmount, setPaymentAmount] = useState<number>();
-  const [sellerDeposit, setSellerDeposit] = useState<number>();
-  const [buyerCost, setBuyerCost] = useState<number>();
+  const [paymentAmount, setPaymentAmount] = useState<string>();
+  const [sellerDeposit, setSellerDeposit] = useState<string>();
+  const [buyerCost, setBuyerCost] = useState<string>();
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
@@ -59,9 +59,7 @@ export default function PostOrder({
     const cid = await postJSONToIPFS(data);
 
     if (!tokenMethods.decimals.data) return;
-    const decimals = BigNumber.from(
-      Math.pow(10, Number.parseInt(tokenMethods.decimals.data.toString()))
-    );
+    let decimals = Number.parseInt(tokenMethods.decimals.data.toString());
 
     // Approve tokens
     setLoadingMessage(`Requesting tokens`);
@@ -73,9 +71,9 @@ export default function PostOrder({
     await order.contract.submitOffer(
       BigNumber.from(`0x${Buffer.from(utils.randomBytes(16)).toString("hex")}`), // random index
       tokenAddress,
-      BigNumber.from(paymentAmount).mul(decimals),
-      BigNumber.from(buyerCost).mul(decimals),
-      BigNumber.from(sellerDeposit).mul(decimals),
+      utils.parseUnits(paymentAmount || "0", decimals),
+      utils.parseUnits(buyerCost || "0", decimals),
+      utils.parseUnits(sellerDeposit || "0", decimals),
       BigNumber.from(60 * 60 * 24 * 2), // 2 day timeout
       `ipfs://${cid}`
     );
@@ -83,15 +81,13 @@ export default function PostOrder({
     setIsSuccess(true);
   }
 
-  function transferAmount(decimals: BigNumber): BigNumber {
-    const price = BigNumber.from(paymentAmount).mul(decimals);
-    const cost = BigNumber.from(buyerCost).mul(decimals);
+  function transferAmount(decimals: number): BigNumber {
+    const price = utils.parseUnits(paymentAmount || "0", decimals);
+    const cost = utils.parseUnits(buyerCost || "0", decimals);
     return cost.gt(price) ? price.add(cost.sub(price)) : price;
   }
 
-  async function approveTokens(
-    decimals: BigNumber
-  ): Promise<string | undefined> {
+  async function approveTokens(decimals: number): Promise<string | undefined> {
     if (!order.metadata.data) return;
     try {
       const tx = await tokenMethods.approve.writeAsync({
@@ -183,21 +179,21 @@ export default function PostOrder({
             placeholder="Payment Amount"
             type={"number"}
             value={paymentAmount}
-            onChange={(e) => setPaymentAmount(parseFloat(e.target.value))}
+            onChange={(e) => setPaymentAmount(e.target.value)}
           ></input>
           <input
             className="bg-gray-100 rounded-xl px-3 py-1 w-full "
             placeholder="Seller Deposit"
             type={"number"}
             value={sellerDeposit}
-            onChange={(e) => setSellerDeposit(parseFloat(e.target.value))}
+            onChange={(e) => setSellerDeposit(e.target.value)}
           ></input>
           <input
             className="bg-gray-100 rounded-xl px-3 py-1 w-full "
             placeholder="Buyer Cost"
             type={"number"}
             value={buyerCost}
-            onChange={(e) => setBuyerCost(parseFloat(e.target.value))}
+            onChange={(e) => setBuyerCost(e.target.value)}
           ></input>
           {!loadingMessage && (
             <>
