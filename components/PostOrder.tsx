@@ -49,8 +49,8 @@ export default function PostOrder({
     "approve"
   );
   const [paymentAmount, setPaymentAmount] = useState<string>();
-  const [sellerDeposit, setSellerDeposit] = useState<string>();
-  const [buyerCost, setBuyerCost] = useState<string>();
+  const sellerDeposit = "0";
+  const buyerCost = paymentAmount;
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
