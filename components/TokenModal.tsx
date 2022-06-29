@@ -70,31 +70,37 @@ export default function TokenModal({
                   </button>
                 </div>
               </div>
-              {tokenList.tokens.map((token) => {
-                return (
-                  <div className="w-1/3 p-1" key={token.address}>
-                    <div
-                      className="flex p-2 gap-2 border rounded-xl p-1 cursor-pointer"
-                      onClick={() => {
-                        setTokenAddress(token.address);
-                        setShowTokenSelect(false);
-                      }}
-                    >
-                      <img
-                        alt="token logo"
-                        src={token.logoURI}
-                        className="h-8 aspect-square rounded-full my-auto"
-                      ></img>
-                      <div className="flex flex-col overflow-hidden">
-                        <p>{token.symbol}</p>
-                        <p className="text-xs w-full text-gray-500 truncate ">
-                          {token.name}
-                        </p>
+              {tokenList.tokens
+                .filter(
+                  // Remove native matic token because it is non ERC-20
+                  (t) =>
+                    t.address != "0x0000000000000000000000000000000000001010"
+                )
+                .map((token) => {
+                  return (
+                    <div className="w-1/3 p-1" key={token.address}>
+                      <div
+                        className="flex p-2 gap-2 border rounded-xl p-1 cursor-pointer"
+                        onClick={() => {
+                          setTokenAddress(token.address);
+                          setShowTokenSelect(false);
+                        }}
+                      >
+                        <img
+                          alt="token logo"
+                          src={token.logoURI}
+                          className="h-8 aspect-square rounded-full my-auto"
+                        ></img>
+                        <div className="flex flex-col overflow-hidden">
+                          <p>{token.symbol}</p>
+                          <p className="text-xs w-full text-gray-500 truncate ">
+                            {token.name}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         </div>

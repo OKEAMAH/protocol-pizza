@@ -48,16 +48,15 @@ export default function StoreFinder({
       {address && (
         <>
           {!isLoading && (
-            <div className="flex items-center gap-1 mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow">
+            <button
+              className="flex items-center gap-1 mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow"
+              onClick={() => {
+                getStores();
+              }}
+            >
+              Find Store
               <SearchIcon className="h-4 w-4" />
-              <button
-                onClick={() => {
-                  getStores();
-                }}
-              >
-                Find Store
-              </button>
-            </div>
+            </button>
           )}
           {isLoading && (
             <div className="flex items-center gap-1 mx-auto bg-orange-500 text-white rounded-xl px-3 py-1 drop-shadow">

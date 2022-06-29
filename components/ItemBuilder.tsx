@@ -9,15 +9,13 @@ export default function ItemBuilder({
   storeID,
   customer,
   address,
-  items,
-  setItems,
+  order,
   setOrder,
 }: {
   storeID: string;
   customer: Customer;
   address: Address;
-  items: Item[];
-  setItems: Dispatch<SetStateAction<Item[]>>;
+  order: Order;
   setOrder: Dispatch<SetStateAction<Order>>;
 }) {
   const [menu, setMenu] = useState<Menu>();
@@ -65,13 +63,23 @@ export default function ItemBuilder({
 
   async function addItem() {
     setIsLoading(true);
-    const item = makeDominosItem();
+    let items: Item[] = [];
+    if (order.products) {
+      items = order.products.map<Item>((product) => {
+        return {
+          code: product.code,
+          options: product.options,
+        };
+      });
+    }
+    const newItem = makeDominosItem();
+    items.push(newItem);
     // Validate item with domino's API
     const body: OrderRequestBody = {
       storeID: storeID,
       customer: customer,
       address: address,
-      items: [item],
+      items: items,
     };
     const result = await fetch(`/api/validate`, {
       method: "POST",
@@ -82,10 +90,7 @@ export default function ItemBuilder({
     });
     const json = await result.json();
     if (json["status"] && json["status"] != -1) {
-      // Add item to items
-      setOrder({} as Order);
-      console.log(json.products[0]);
-      setItems([...items, json.products[0] as Item]);
+      setOrder(json as Order);
     } else {
       setErrorMessage("Error validating item");
     }
@@ -239,8 +244,8 @@ export default function ItemBuilder({
             className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
             onClick={() => addItem()}
           >
-            <PlusCircleIcon className="h-4 w-4 text-white" />
             Add to Order
+            <PlusCircleIcon className="h-4 w-4 text-white" />
           </button>
         )}
         {isLoading && (

@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 import AddressBuilder from "../components/AddressBuilder";
 import CustomerBuilder from "../components/CustomerBuilder";
 import ItemBuilder from "../components/ItemBuilder";
-import OrderBuilder from "../components/OrderBuilder";
 import PostOrder from "../components/PostOrder";
 import StoreFinder from "../components/StoreFinder";
 import { Customer, Address } from "../lib/customer";
@@ -24,7 +23,6 @@ export default function Landing() {
   const [address, setAddress] = useState<Address>({} as Address);
   const [addressIsValid, setAddressIsValid] = useState<boolean>(false);
   const [storeID, setStoreID] = useState<string>("");
-  const [items, setItems] = useState<Item[]>(new Array<Item>());
   const [order, setOrder] = useState<Order>({} as Order);
 
   useEffect(() => {
@@ -34,7 +32,6 @@ export default function Landing() {
   }, [addressIsValid, customerIsValid]);
 
   useEffect(() => {
-    setItems(new Array<Item>());
     setOrder({} as Order);
   }, [storeID]);
 
@@ -76,21 +73,6 @@ export default function Landing() {
                   storeID={storeID}
                   customer={customer}
                   address={address}
-                  items={items}
-                  setItems={setItems}
-                  setOrder={setOrder}
-                />
-              </>
-            )}
-            {items.length > 0 && (
-              <>
-                <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-                <OrderBuilder
-                  storeID={storeID}
-                  customer={customer}
-                  address={address}
-                  items={items}
-                  setItems={setItems}
                   order={order}
                   setOrder={setOrder}
                 />
@@ -102,11 +84,11 @@ export default function Landing() {
                 <HasWalletConnected>
                   <HasEncryptionKey>
                     <PostOrder
-                      pizza={order}
                       storeID={storeID}
                       customer={customer}
                       address={address}
-                      items={items}
+                      order={order}
+                      setOrder={setOrder}
                     />
                   </HasEncryptionKey>
                 </HasWalletConnected>

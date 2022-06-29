@@ -1,6 +1,10 @@
-import { ChevronDownIcon, RefreshIcon } from "@heroicons/react/solid";
+import {
+  ChevronDownIcon,
+  RefreshIcon,
+  XCircleIcon,
+} from "@heroicons/react/solid";
 import { BigNumber, utils } from "ethers";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import {
   erc20ABI,
   useAccount,
@@ -19,22 +23,22 @@ import { OrderRequestBody } from "../lib/useDominos";
 import TokenModal from "./TokenModal";
 
 export default function PostOrder({
-  pizza,
   storeID,
   customer,
   address,
-  items,
+  order,
+  setOrder,
 }: {
-  pizza: Order;
   storeID: string;
   customer: Customer;
   address: Address;
-  items: Item[];
+  order: Order;
+  setOrder: Dispatch<SetStateAction<Order>>;
 }) {
   const encryption = useEncryption();
   const network = useNetwork();
   const id = network.activeChain?.id || 42;
-  const order = useOrder(network.activeChain?.id || 42, CHAINS[id]);
+  const rwtpOrder = useOrder(network.activeChain?.id || 42, CHAINS[id]);
   const [tokenAddress, setTokenAddress] = useState("");
   const token = useToken({ address: tokenAddress });
   const approve = useContractWrite(
@@ -57,13 +61,19 @@ export default function PostOrder({
   });
 
   async function onSubmit() {
-    if (!order.metadata.data?.encryptionPublicKey) {
+    if (!rwtpOrder.metadata.data?.encryptionPublicKey) {
       console.error("Order has no encryption key");
       return;
     }
 
-    // Upload pizza json to IPFS
+    // Upload order json to IPFS
     setLoadingMessage("Uploading");
+    const items = order.products.map<Item>((product) => {
+      return {
+        code: product.code,
+        options: product.options,
+      };
+    });
     const json: OrderRequestBody = {
       storeID: storeID,
       address: address,
@@ -72,7 +82,7 @@ export default function PostOrder({
     };
 
     const data = await encryption.encrypt(
-      order.metadata.data?.encryptionPublicKey,
+      rwtpOrder.metadata.data?.encryptionPublicKey,
       JSON.stringify(json)
     );
 
@@ -88,7 +98,7 @@ export default function PostOrder({
 
     // Submit offer
     setLoadingMessage("Submitting");
-    await order.contract.submitOffer(
+    await rwtpOrder.contract.submitOffer(
       BigNumber.from(`0x${Buffer.from(utils.randomBytes(16)).toString("hex")}`), // random index
       tokenAddress,
       utils.parseUnits(paymentAmount || "0", decimals),
@@ -108,7 +118,7 @@ export default function PostOrder({
   }
 
   async function approveTokens(decimals: number): Promise<string | undefined> {
-    if (!order.metadata.data) return;
+    if (!rwtpOrder.metadata.data) return;
     try {
       const tx = await approve.writeAsync({
         args: [CHAINS[id], transferAmount(decimals)],
@@ -121,8 +131,8 @@ export default function PostOrder({
     }
   }
 
-  const tip = Math.round(pizza.amountsBreakdown.customer * 0.2 * 100) / 100;
-  const total = Math.round((pizza.amountsBreakdown.customer + tip) * 100) / 100;
+  const tip = Math.round(order.amountsBreakdown.customer * 0.2 * 100) / 100;
+  const total = Math.round((order.amountsBreakdown.customer + tip) * 100) / 100;
 
   return (
     <>
@@ -130,15 +140,35 @@ export default function PostOrder({
         <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
           <p>Post Order</p>
           <div>
-            <p className="text-sm mb-1">Order Cost</p>
+            <p className="text-sm mb-1">Order</p>
             <div className="text-sm bg-gray-100 p-2 rounded-xl">
-              {pizza.products.map((product) => {
+              {order.products.map((product, index) => {
                 return (
                   <div
                     key={product.iD}
                     className="flex gap-1 items-center w-full"
                   >
-                    <p>{product.name}</p>
+                    <XCircleIcon
+                      className="h-5 w-5 text-red-500 shrink-0 cursor-pointer"
+                      onClick={() => {
+                        // Remove product at index from products
+                        const newProducts = [...order.products];
+                        newProducts.splice(index, 1);
+                        setOrder({
+                          ...order,
+                          products: newProducts,
+                        } as Order);
+                      }}
+                    />
+                    <div>
+                      <p>{product.name}</p>
+                      <p className="text-xs font-light">
+                        {product.descriptions[0].value.replace(
+                          "Robust Inspired",
+                          ""
+                        )}
+                      </p>
+                    </div>
                     <div className="flex-grow min-h-0"></div>
                     <p>${product.price}</p>
                   </div>
@@ -147,12 +177,12 @@ export default function PostOrder({
               <div className="flex gap-1 items-center w-full">
                 <p>Delivery Free</p>
                 <div className="flex-grow min-h-0"></div>
-                <p>${pizza.amountsBreakdown.deliveryFee}</p>
+                <p>${order.amountsBreakdown.deliveryFee}</p>
               </div>
               <div className="flex gap-1 items-center w-full">
                 <p>Tax</p>
                 <div className="flex-grow min-h-0"></div>
-                <p>${pizza.amountsBreakdown.tax}</p>
+                <p>${order.amountsBreakdown.tax}</p>
               </div>
               <div className="flex gap-1 items-center w-full">
                 <p>Tip (20%)</p>

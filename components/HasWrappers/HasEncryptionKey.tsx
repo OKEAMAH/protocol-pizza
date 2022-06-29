@@ -21,7 +21,8 @@ export default function HasEncryptionKey({
             className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
             onClick={() => onGenerate()}
           >
-            <LockClosedIcon className="h-4 w-4" /> Ya, go for it dude
+            Ya, go for it dude
+            <LockClosedIcon className="h-4 w-4" />
           </button>
         </div>
       </>
