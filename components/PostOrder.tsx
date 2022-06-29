@@ -1,15 +1,26 @@
-import { LockClosedIcon, RefreshIcon } from "@heroicons/react/solid";
+import {
+  ChevronDownIcon,
+  LockClosedIcon,
+  RefreshIcon,
+} from "@heroicons/react/solid";
 import { BigNumber, utils } from "ethers";
 import { useState } from "react";
-import { useNetwork } from "wagmi";
+import {
+  erc20ABI,
+  useAccount,
+  useBalance,
+  useContractWrite,
+  useNetwork,
+  useToken,
+} from "wagmi";
 import { useOrder } from "../lib/client/contracts/useOrder";
 import { useEncryption } from "../lib/client/encryption/hooks";
 import { CHAINS } from "../lib/constants";
 import { Customer, Address } from "../lib/customer";
 import { postJSONToIPFS } from "../lib/ipfs";
 import { Item, Order } from "../lib/item";
-import { useTokenMethods } from "../lib/tokens";
 import { OrderRequestBody } from "../lib/useDominos";
+import TokenModal from "./TokenModal";
 
 export default function PostOrder({
   pizza,
@@ -29,12 +40,25 @@ export default function PostOrder({
   const id = network.activeChain?.id || 42;
   const order = useOrder(network.activeChain?.id || 42, CHAINS[id]);
   const [tokenAddress, setTokenAddress] = useState("");
-  const tokenMethods = useTokenMethods(tokenAddress);
+  const token = useToken({ address: tokenAddress });
+  const approve = useContractWrite(
+    {
+      addressOrName: tokenAddress,
+      contractInterface: erc20ABI,
+    },
+    "approve"
+  );
   const [paymentAmount, setPaymentAmount] = useState<string>();
   const [sellerDeposit, setSellerDeposit] = useState<string>();
   const [buyerCost, setBuyerCost] = useState<string>();
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+
+  const account = useAccount();
+  const balance = useBalance({
+    addressOrName: account.data?.address,
+    token: token.data?.address,
+  });
 
   async function onSubmit() {
     if (!order.metadata.data?.encryptionPublicKey) {
@@ -58,8 +82,8 @@ export default function PostOrder({
 
     const cid = await postJSONToIPFS(data);
 
-    if (!tokenMethods.decimals.data) return;
-    let decimals = Number.parseInt(tokenMethods.decimals.data.toString());
+    if (!token.data) return;
+    let decimals = token.data.decimals;
 
     // Approve tokens
     setLoadingMessage(`Requesting tokens`);
@@ -90,7 +114,7 @@ export default function PostOrder({
   async function approveTokens(decimals: number): Promise<string | undefined> {
     if (!order.metadata.data) return;
     try {
-      const tx = await tokenMethods.approve.writeAsync({
+      const tx = await approve.writeAsync({
         args: [CHAINS[id], transferAmount(decimals)],
       });
       await tx.wait();
@@ -167,55 +191,70 @@ export default function PostOrder({
             </div>
           </div>
           <p className="text-sm">Your Offer</p>
-          <input
-            className="bg-gray-100 rounded-xl px-3 py-1 w-full "
-            placeholder="Token Address"
-            type="text"
-            value={tokenAddress}
-            onChange={(e) => setTokenAddress(e.target.value)}
-          ></input>
-          <input
-            className="bg-gray-100 rounded-xl px-3 py-1 w-full "
-            placeholder="Payment Amount"
-            type={"number"}
-            value={paymentAmount}
-            onChange={(e) => setPaymentAmount(e.target.value)}
-          ></input>
-          <input
-            className="bg-gray-100 rounded-xl px-3 py-1 w-full "
-            placeholder="Seller Deposit"
-            type={"number"}
-            value={sellerDeposit}
-            onChange={(e) => setSellerDeposit(e.target.value)}
-          ></input>
-          <input
-            className="bg-gray-100 rounded-xl px-3 py-1 w-full "
-            placeholder="Buyer Cost"
-            type={"number"}
-            value={buyerCost}
-            onChange={(e) => setBuyerCost(e.target.value)}
-          ></input>
+          <div className="flex bg-gray-100 rounded-xl p-3 w-full gap-2">
+            <input
+              className="bg-gray-100 flex-grow border-none focus:ring-0 focus:outline-0"
+              type="text"
+              placeholder="Payment Amount"
+              value={paymentAmount}
+              onChange={(e) => {
+                setPaymentAmount(e.target.value);
+              }}
+            ></input>
+            <div className="flex flex-col">
+              <TokenModal
+                tokenAddress={tokenAddress}
+                setTokenAddress={setTokenAddress}
+              >
+                <div
+                  className="flex items-center justify-center gap-1 bg-white rounded px-3 py-1 hover:bg-gray-50 cursor-pointer"
+                >
+                  <p className="font-semibold">{token.data?.symbol || ""}</p>
+                  <ChevronDownIcon className="h-4 w-4" />
+                </div>
+              </TokenModal>
+              <div className="truncate text-xs text-center">
+                Balance: {balance.data?.formatted.slice(0, 7) ?? "0.0"}
+              </div>
+            </div>
+          </div>
           {!loadingMessage && (
             <>
-              {!tokenMethods.decimals.data &&
-                !tokenMethods.decimals.isLoading && (
-                  <button className="w-full bg-red-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
-                    Invalid Token
-                  </button>
-                )}
-              {!tokenMethods.decimals.data &&
-                tokenMethods.decimals.isLoading && (
-                  <button className="w-full bg-gray-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
-                    Loading Token
-                  </button>
-                )}
-              {tokenMethods.decimals.data && (
-                <button
-                  className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
-                  onClick={() => onSubmit()}
-                >
-                  Post Order
+              {!token.isLoading && token.error && (
+                <button className="w-full bg-red-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
+                  Invalid Token
                 </button>
+              )}
+              {token.isLoading || balance.isLoading && (
+                <button className="w-full bg-gray-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
+                  Loading Token
+                </button>
+              )}
+              {token.isSuccess && balance.isSuccess && (
+                <>
+                  {balance.data?.value &&
+                  balance.data.value.gte(
+                    utils.parseUnits(
+                      paymentAmount || "0",
+                      token.data?.decimals ?? 0
+                    )
+                  ) ? (
+                    <>
+                      <button
+                        className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
+                        onClick={() => onSubmit()}
+                      >
+                        Post Order
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button className="w-full bg-red-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
+                        Insufficient Balance
+                      </button>
+                    </>
+                  )}
+                </>
               )}
             </>
           )}
