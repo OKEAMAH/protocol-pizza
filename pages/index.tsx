@@ -10,7 +10,7 @@ import ItemBuilder from "../components/ItemBuilder";
 import PostOrder from "../components/PostOrder";
 import StoreFinder from "../components/StoreFinder";
 import { Customer, Address } from "../lib/customer";
-import { Item, Order } from "../lib/item";
+import { Order } from "../lib/item";
 import HasEncryptionKey from "../components/HasWrappers/HasEncryptionKey";
 import HasWalletConnected from "../components/HasWrappers/HasWalletConnected";
 
