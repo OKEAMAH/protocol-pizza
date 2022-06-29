@@ -115,17 +115,6 @@ export default function Landing() {
           </div>
         </div>
       </AppHeader>
-      <div className="bg-black w-full text-white px-2 py-4">
-        <p className="text-sm">
-          <span className=" italic">
-            "Blockchain technologies facilitate few, if any, real-economy uses."
-          </span>
-          <span className="">
-            {" "}
-            - Someone who hasn't bought a pizza with crypto
-          </span>
-        </p>
-      </div>
     </div>
   );
 }

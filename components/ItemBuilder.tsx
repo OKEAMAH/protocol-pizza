@@ -24,7 +24,7 @@ export default function ItemBuilder({
   const [size, setSize] = useState<string>();
   const [cheese, setCheese] = useState<boolean>(true);
   const [tomatoSauce, setTomatoSauce] = useState<boolean>(true);
-  const [topping, setTopping] = useState<string>("");
+  const [toppings, setToppings] = useState<string[]>([""]);
   const [_, setErrorMessage] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -33,7 +33,7 @@ export default function ItemBuilder({
       if (!storeID) return;
       setMenu(undefined);
       setSize(undefined);
-      setTopping("");
+      setToppings([""]);
       try {
         const result = await fetch(`/api/menu?storeID=${storeID}`, {
           method: "GET",
@@ -97,7 +97,9 @@ export default function ItemBuilder({
       C: 0,
       X: 0,
     };
-    if (topping) options[topping] = { "1/1": "1" };
+    for (const topping of toppings) {
+      if (topping) options[topping] = { "1/1": "1" };
+    }
     if (cheese) options["C"] = { "1/1": "1" };
     if (tomatoSauce) options["X"] = { "1/1": "1" };
     return {
@@ -110,11 +112,10 @@ export default function ItemBuilder({
   return (
     <>
       <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
-        <p>Create Pizza</p>
+        <p>Build Your Pizza</p>
         <div>
-          <p className="text-sm">Default Toppings</p>
+          <p className="text-sm mb-1">Default Toppings</p>
           <div className="flex items-center gap-1">
-            <p className="text-sm">Cheese:</p>
             <input
               type="checkbox"
               checked={cheese}
@@ -122,9 +123,9 @@ export default function ItemBuilder({
                 setCheese(event.target.checked);
               }}
             />
+            <p className="text-sm">Cheese</p>
           </div>
           <div className="flex items-center gap-1">
-            <p className="text-sm">Tomato Sauce:</p>
             <input
               type="checkbox"
               checked={tomatoSauce}
@@ -132,87 +133,106 @@ export default function ItemBuilder({
                 setTomatoSauce(event.target.checked);
               }}
             />
+            <p className="text-sm">Tomato Sauce</p>
           </div>
         </div>
         <div>
           <p className="text-sm mb-1">Size</p>
-          <select
-            className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
-            onChange={(event) => {
-              setSize(event.target.value);
-            }}
-          >
+          <div className="flex flex-col content-center text-sm">
             {Object.keys(menu.sizes.pizza).map((key) => {
-              const size = menu.sizes.pizza[key];
+              const sizeItem = menu.sizes.pizza[key];
               return (
-                <option value={size.code} key={size.code}>
-                  {size.name}
-                </option>
+                <div key={sizeItem.code}>
+                  <label className="flex content-center gap-1">
+                    <input
+                      type="radio"
+                      checked={size == sizeItem.code}
+                      onChange={() => {
+                        setSize(sizeItem.code);
+                      }}
+                    />
+                    <p className="my-auto">{sizeItem.name}</p>
+                  </label>
+                </div>
               );
             })}
-          </select>
+          </div>
         </div>
         <div>
           <p className="text-sm mb-1">Toppings</p>
-          <select
-            className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
-            value={topping}
-            onChange={(event) => {
-              setTopping(event.target.value);
-            }}
-          >
-            <option value={""}>None</option>
-            <optgroup label="Sauces">
-              {Object.keys(menu.toppings.pizza).map((key) => {
-                const topping = menu.toppings.pizza[key];
-                if (!topping.tags.sauce || topping.code == "X") return;
-                return (
-                  <option value={topping.code} key={topping.code}>
-                    {topping.name}
-                  </option>
-                );
-              })}
-            </optgroup>
-            <optgroup label="Veggies">
-              {Object.keys(menu.toppings.pizza).map((key) => {
-                const topping = menu.toppings.pizza[key];
-                if (!topping.tags.vege) return;
-                return (
-                  <option value={topping.code} key={topping.code}>
-                    {topping.name}
-                  </option>
-                );
-              })}
-            </optgroup>
-            <optgroup label="Meat">
-              {Object.keys(menu.toppings.pizza).map((key) => {
-                const topping = menu.toppings.pizza[key];
-                if (!topping.tags.meat) return;
-                return (
-                  <option value={topping.code} key={topping.code}>
-                    {topping.name}
-                  </option>
-                );
-              })}
-            </optgroup>
-            <optgroup label="Other">
-              {Object.keys(menu.toppings.pizza).map((key) => {
-                const topping = menu.toppings.pizza[key];
-                if (
-                  topping.tags.meat ||
-                  topping.tags.vege ||
-                  topping.tags.sauce ||
-                  topping.tags.cheese
-                )
-                  return;
-                return (
-                  <option value={topping.code} key={topping.code}>
-                    {topping.name}
-                  </option>
-                );
-              })}
-            </optgroup>
-          </select>
+          <div className="flex flex-col gap-1">
+            {toppings.map((topping, index) => {
+              return (
+                <select
+                  className="bg-gray-100 rounded-xl px-3 py-1 w-full text-sm appearance-none"
+                  value={topping}
+                  key={index}
+                  onChange={(event) => {
+                    let newToppings = [...toppings];
+                    newToppings[index] = event.target.value;
+                    // Clear blanks
+                    newToppings = newToppings.filter((t) => t != "");
+                    // Add blank to end
+                    newToppings.push("");
+                    console.log(newToppings);
+                    setToppings(newToppings);
+                  }}
+                >
+                  <option value={""}>None</option>
+                  <optgroup label="Sauces">
+                    {Object.keys(menu.toppings.pizza).map((key) => {
+                      const topping = menu.toppings.pizza[key];
+                      if (!topping.tags.sauce || topping.code == "X") return;
+                      return (
+                        <option value={topping.code} key={topping.code}>
+                          {topping.name}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                  <optgroup label="Veggies">
+                    {Object.keys(menu.toppings.pizza).map((key) => {
+                      const topping = menu.toppings.pizza[key];
+                      if (!topping.tags.vege) return;
+                      return (
+                        <option value={topping.code} key={topping.code}>
+                          {topping.name}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                  <optgroup label="Meat">
+                    {Object.keys(menu.toppings.pizza).map((key) => {
+                      const topping = menu.toppings.pizza[key];
+                      if (!topping.tags.meat) return;
+                      return (
+                        <option value={topping.code} key={topping.code}>
+                          {topping.name}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                  <optgroup label="Other">
+                    {Object.keys(menu.toppings.pizza).map((key) => {
+                      const topping = menu.toppings.pizza[key];
+                      if (
+                        topping.tags.meat ||
+                        topping.tags.vege ||
+                        topping.tags.sauce ||
+                        topping.tags.cheese
+                      )
+                        return;
+                      return (
+                        <option value={topping.code} key={topping.code}>
+                          {topping.name}
+                        </option>
+                      );
+                    })}
+                  </optgroup>
+                </select>
+              );
+            })}
+          </div>
         </div>
         {!isLoading && (
           <button

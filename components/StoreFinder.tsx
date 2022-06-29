@@ -77,10 +77,7 @@ export default function StoreFinder({
         <>
           <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
           <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
-            <div className="flex justify-between gap-3">
-              <p>Select Store</p>
-              <p className="text-right underline opacity-50">estimated wait</p>
-            </div>
+            <p>Select Store</p>
             <p className="font-mono text-xs">
               We recommend selecting the closest.
             </p>
