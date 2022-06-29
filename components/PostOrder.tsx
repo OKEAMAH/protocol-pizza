@@ -178,10 +178,7 @@ export default function PostOrder({
               }}
             ></input>
             <div className="flex flex-col">
-              <TokenModal
-                tokenAddress={tokenAddress}
-                setTokenAddress={setTokenAddress}
-              >
+              <TokenModal setTokenAddress={setTokenAddress}>
                 <div className="flex items-center justify-center gap-1 bg-white rounded px-3 py-1 hover:bg-gray-50 cursor-pointer">
                   <p className="font-semibold">{token.data?.symbol || ""}</p>
                   <ChevronDownIcon className="h-4 w-4" />
