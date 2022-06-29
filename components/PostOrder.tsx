@@ -125,26 +125,6 @@ export default function PostOrder({
     }
   }
 
-  async function onGenerate() {
-    await encryption.generate();
-  }
-
-  if (!encryption.hasKey) {
-    return (
-      <>
-        <div className="flex flex-col w-full bg-white rounded-xl p-3 drop-shadow gap-2">
-          <p>Is it cool if this website encrypts your shipping info?</p>
-          <button
-            className="w-full bg-orange-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1"
-            onClick={() => onGenerate()}
-          >
-            <LockClosedIcon className="h-4 w-4" /> Ya, go for it dude
-          </button>
-        </div>
-      </>
-    );
-  }
-
   const tip = Math.round(pizza.amountsBreakdown.customer * 0.2 * 100) / 100;
   const total = Math.round((pizza.amountsBreakdown.customer + tip) * 100) / 100;
 

@@ -12,6 +12,8 @@ import PostOrder from "../components/PostOrder";
 import StoreFinder from "../components/StoreFinder";
 import { Customer, Address } from "../lib/customer";
 import { Item, Order } from "../lib/item";
+import HasEncryptionKey from "../components/HasWrappers/HasEncryptionKey";
+import HasWalletConnected from "../components/HasWrappers/HasWalletConnected";
 
 SyntaxHighlighter.registerLanguage("solidity", solidity);
 SyntaxHighlighter.registerLanguage("typescript", typescript);
@@ -97,13 +99,17 @@ export default function Landing() {
             {order.orderID && (
               <>
                 <ArrowDownIcon className="h-4 w-4 mx-auto text-gray-500" />
-                <PostOrder
-                  pizza={order}
-                  storeID={storeID}
-                  customer={customer}
-                  address={address}
-                  items={items}
-                />
+                <HasWalletConnected>
+                  <HasEncryptionKey>
+                    <PostOrder
+                      pizza={order}
+                      storeID={storeID}
+                      customer={customer}
+                      address={address}
+                      items={items}
+                    />
+                  </HasEncryptionKey>
+                </HasWalletConnected>
               </>
             )}
           </div>
