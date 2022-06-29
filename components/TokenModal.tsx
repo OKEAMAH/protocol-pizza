@@ -6,20 +6,18 @@ import { useToken } from "wagmi";
 
 export default function TokenModal({
   children,
-  tokenAddress,
   setTokenAddress,
 }: {
   children: React.ReactNode;
-  tokenAddress: string;
   setTokenAddress: Dispatch<SetStateAction<string>>;
 }) {
   const [showTokenSelect, setShowTokenSelect] = useState(false);
   const [customTokenAddress, setCustomTokenAddress] = useState<string>();
   const [tokenList, setTokenList] = useState<TokenList>();
-  const customToken = useToken({address: customTokenAddress});
+  const customToken = useToken({ address: customTokenAddress });
 
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
-  const { data, error } = useSWR(
+  const { data } = useSWR(
     "https://api-polygon-tokens.polygon.technology/tokenlists/default.tokenlist.json",
     fetcher
   );
@@ -29,7 +27,7 @@ export default function TokenModal({
       setTokenList(data);
       setTokenAddress((data as TokenList).tokens[0].address);
     }
-  }, [data]);
+  }, [data, setTokenAddress]);
 
   if (!tokenList) return <>Loading</>;
 
@@ -83,6 +81,7 @@ export default function TokenModal({
                       }}
                     >
                       <img
+                        alt="token logo"
                         src={token.logoURI}
                         className="h-8 aspect-square rounded-full my-auto"
                       ></img>

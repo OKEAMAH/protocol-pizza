@@ -1,14 +1,11 @@
 import { FingerPrintIcon, SwitchHorizontalIcon } from "@heroicons/react/solid";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
 
 export default function HasWalletConnected({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const account = useAccount();
-
   return (
     <>
       <ConnectButton.Custom>

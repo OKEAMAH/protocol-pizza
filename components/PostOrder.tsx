@@ -1,8 +1,4 @@
-import {
-  ChevronDownIcon,
-  LockClosedIcon,
-  RefreshIcon,
-} from "@heroicons/react/solid";
+import { ChevronDownIcon, RefreshIcon } from "@heroicons/react/solid";
 import { BigNumber, utils } from "ethers";
 import { useState } from "react";
 import {
@@ -186,9 +182,7 @@ export default function PostOrder({
                 tokenAddress={tokenAddress}
                 setTokenAddress={setTokenAddress}
               >
-                <div
-                  className="flex items-center justify-center gap-1 bg-white rounded px-3 py-1 hover:bg-gray-50 cursor-pointer"
-                >
+                <div className="flex items-center justify-center gap-1 bg-white rounded px-3 py-1 hover:bg-gray-50 cursor-pointer">
                   <p className="font-semibold">{token.data?.symbol || ""}</p>
                   <ChevronDownIcon className="h-4 w-4" />
                 </div>
@@ -205,11 +199,12 @@ export default function PostOrder({
                   Invalid Token
                 </button>
               )}
-              {token.isLoading || balance.isLoading && (
-                <button className="w-full bg-gray-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
-                  Loading Token
-                </button>
-              )}
+              {token.isLoading ||
+                (balance.isLoading && (
+                  <button className="w-full bg-gray-500 text-white rounded-xl px-3 py-1 flex items-center justify-center gap-1 cursor-not-allowed">
+                    Loading Token
+                  </button>
+                ))}
               {token.isSuccess && balance.isSuccess && (
                 <>
                   {balance.data?.value &&
