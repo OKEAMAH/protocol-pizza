@@ -31,7 +31,7 @@
     "gray-matter": "^4.0.3",
     "ipfs-http-client": "^56.0.3",
     "jsonschema": "^1.4.1",
-    "next": "^12.1.6",
+    "next": "^13.5.0",
     "next-mdx-remote": "^3.0.8",
     "node-abort-controller": "^3.0.1",
     "polygon-token-list": "git+https://github.com/maticnetwork/polygon-token-list.git#ce24aa9288aeb30db2dc788213706424bd34c540",
